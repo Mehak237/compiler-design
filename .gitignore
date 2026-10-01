@@ -1,0 +1,10 @@
+# Local PDF files (Private notes - never commit or push)
+*.pdf
+Compiler_Design_Master_Notes_69_Pages.pdf
+
+# Local helper scripts & temporary files
+*.py
+*.bat
+compiler_design_all_69_pages_for_pdf.html
+*.log
+.system_generated/
