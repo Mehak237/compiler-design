@@ -183,23 +183,26 @@
     }
 
     /* ==============================================================
-       VISUAL FLOWCHART & DIAGRAM STYLING (NO CONFUSING MATH CODES)
+       VISUAL FLOWCHART & DIAGRAM STYLING (PERFECT AUTO-FIT & NO OVERLAPS)
        ============================================================== */
     .flowchart-container {
       background: #ffffff;
-      border: 2px solid #94a3b8;
+      border: 2px solid #cbd5e1;
       border-radius: 12px;
-      padding: 20px;
-      margin: 20px 0;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+      padding: 16px 18px;
+      margin: 18px 0;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
     }
 
     .flowchart-title {
       font-family: 'Patrick Hand', cursive;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       color: #0369a1;
       font-weight: bold;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -210,25 +213,31 @@
     .flow-row {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       gap: 12px;
-      flex-wrap: wrap;
-      margin: 15px 0;
+      width: max-content;
+      min-width: 100%;
+      padding: 8px 4px;
+      margin: 8px 0;
     }
 
     .flow-box {
+      flex-shrink: 0;
       background: #f8fafc;
       border: 2px solid #0284c7;
       border-radius: 8px;
-      padding: 10px 16px;
+      padding: 10px 14px;
       font-family: 'Inter', sans-serif;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: #0f172a;
       text-align: center;
-      min-width: 130px;
-      box-shadow: 2px 3px 6px rgba(0,0,0,0.05);
+      min-width: 120px;
+      max-width: 260px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       position: relative;
+      line-height: 1.35;
+      box-sizing: border-box;
     }
 
     .flow-box.start { background: #dbeafe; border-color: #2563eb; color: #1e40af; border-radius: 20px; }
@@ -244,23 +253,31 @@
       font-weight: 400;
       color: #64748b;
       margin-top: 3px;
+      line-height: 1.25;
     }
 
     .flow-arrow {
-      font-size: 1.5rem;
+      flex-shrink: 0;
+      font-size: 1.35rem;
       font-weight: bold;
       color: #64748b;
       display: flex;
       flex-direction: column;
       align-items: center;
-      line-height: 1;
+      justify-content: center;
+      line-height: 1.1;
+      padding: 0 6px;
+      text-align: center;
+      min-width: 80px;
     }
 
     .flow-arrow span {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: #0284c7;
       font-family: 'Inter', sans-serif;
       font-weight: 600;
+      white-space: nowrap;
+      margin-top: 3px;
     }
 
     /* Step Breakdown Cards */
@@ -268,9 +285,9 @@
       background: #ffffff;
       border-left: 6px solid #0284c7;
       border-radius: 0 8px 8px 0;
-      padding: 18px 22px;
-      margin: 22px 0;
-      box-shadow: 2px 5px 14px rgba(0,0,0,0.06);
+      padding: 16px 20px;
+      margin: 18px 0;
+      box-shadow: 2px 5px 14px rgba(0,0,0,0.05);
     }
 
     .step-card.s1 { border-left-color: #f97316; }
@@ -286,12 +303,14 @@
       align-items: center;
       margin-bottom: 10px;
       flex-wrap: wrap;
+      gap: 8px;
     }
 
     .step-title {
       font-family: 'Caveat', cursive;
-      font-size: 1.9rem;
+      font-size: 1.85rem;
       font-weight: bold;
+      overflow-wrap: break-word;
     }
 
     .step-badge {
@@ -299,7 +318,7 @@
       color: #475569;
       padding: 2px 10px;
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-family: 'Patrick Hand', cursive;
       font-weight: bold;
     }
@@ -308,9 +327,9 @@
       background: #f0fdf4;
       border-left: 4px solid #22c55e;
       padding: 12px 16px;
-      margin-top: 12px;
+      margin-top: 10px;
       border-radius: 0 6px 6px 0;
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       color: #166534;
     }
 
@@ -320,35 +339,46 @@
       padding: 12px 16px;
       margin-top: 8px;
       border-radius: 0 6px 6px 0;
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       color: #1e40af;
     }
 
-    /* Hand-drawn Table */
-    .hand-table {
+    /* Table Horizontal Scroll Wrapper */
+    .table-wrapper {
       width: 100%;
-      border-collapse: collapse;
-      margin: 25px 0;
-      background: #ffffff;
-      border: 2px solid #64748b;
-      box-shadow: 3px 4px 10px rgba(0,0,0,0.05);
-    }
-
-    .hand-table th, .hand-table td {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 18px 0;
+      border-radius: 8px;
       border: 1px solid #cbd5e1;
-      padding: 12px 16px;
-      text-align: left;
-      font-size: 1.15rem;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
-    .hand-table th {
+    .hand-table, table {
+      width: 100%;
+      min-width: 480px;
+      border-collapse: collapse;
+      background: #ffffff;
+      margin: 0 !important;
+      border: none !important;
+    }
+
+    .hand-table th, .hand-table td, table th, table td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 1.08rem;
+    }
+
+    .hand-table th, table th {
       background-color: #f1f5f9;
       color: #0f172a;
       font-family: 'Patrick Hand', cursive;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
     }
 
-    .hand-table tr:nth-child(even) { background-color: #f8fafc; }
+    .hand-table tr:nth-child(even), table tr:nth-child(even) { background-color: #f8fafc; }
 
     .code-snippet {
       background: #1e293b;
@@ -356,57 +386,34 @@
       border-radius: 6px;
       padding: 12px 16px;
       font-family: 'Courier New', Courier, monospace;
-      font-size: 1.05rem;
+      font-size: 1rem;
       margin: 8px 0;
-      display: inline-block;
+      display: block;
       width: 100%;
       line-height: 1.5;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      box-sizing: border-box;
     }
 
     .img-showcase {
       width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
-      border: 3px solid #fff;
-      margin: 20px 0;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      border: 2px solid #e2e8f0;
+      margin: 18px 0;
+      display: block;
     }
 
-    /* Visual Tree Representation */
-    .visual-tree-container {
-      background: #fff;
-      border: 2px solid #bae6fd;
-      border-radius: 8px;
-      padding: 18px;
-      margin: 15px 0;
-      text-align: center;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .tree-node {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-weight: bold;
-      margin: 4px;
-      font-size: 0.95rem;
-    }
-
-    .node-op { background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; }
-    .node-id { background: #e0f2fe; border: 2px solid #0284c7; color: #075985; }
-    .node-convert { background: #fef08a; border: 2px solid #ca8a04; color: #854d0e; }
-
-    @media print {
-      body { background: #fff; padding: 0; }
-      .page { box-shadow: none; border-left: none; margin: 0; padding: 25px; page-break-after: always; }
-      .page::before, .page::after { display: none; }
-    }
-  
     /* Top Sticky Topic Navigation Menu */
     .top-nav-container {
       position: sticky;
       top: 0;
       z-index: 9999;
-      background: rgba(255, 253, 250, 0.95);
+      background: rgba(255, 253, 250, 0.96);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-bottom: 2px dashed #94a3b8;
@@ -427,7 +434,7 @@
 
     .nav-title {
       font-family: 'Caveat', cursive;
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       font-weight: bold;
       color: #0c4a6e;
       display: flex;
@@ -440,7 +447,7 @@
       color: #475569;
       font-family: 'Inter', sans-serif;
       background: #f1f5f9;
-      padding: 4px 12px;
+      padding: 4px 14px;
       border-radius: 20px;
       border: 1px solid #cbd5e1;
     }
@@ -454,6 +461,7 @@
       padding-bottom: 6px;
       scrollbar-width: thin;
       scrollbar-color: #cbd5e1 transparent;
+      -webkit-overflow-scrolling: touch;
     }
 
     .topic-scroll::-webkit-scrollbar {
@@ -487,7 +495,6 @@
       background: #f8fafc;
       border-color: #94a3b8;
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
     }
 
     .topic-btn.active {
@@ -511,58 +518,6 @@
     .topic-btn.active .count-badge {
       background: rgba(255, 255, 255, 0.25);
       color: #ffffff;
-    }
-
-    @media print {
-      .top-nav-container { display: none !important; }
-    }
-
-  
-    /* ==============================================================
-       SCREEN MODE SWITCHER & MOBILE RESPONSIVE SYSTEM
-       ============================================================== */
-    .screen-mode-toggle {
-      display: inline-flex;
-      align-items: center;
-      background: #e2e8f0;
-      padding: 3px;
-      border-radius: 20px;
-      gap: 2px;
-      border: 1px solid #cbd5e1;
-    }
-
-    .mode-btn {
-      border: none;
-      background: transparent;
-      padding: 5px 12px;
-      border-radius: 16px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #475569;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.2s ease;
-      user-select: none;
-    }
-
-    .mode-btn:hover {
-      color: #0f172a;
-    }
-
-    .mode-btn.active {
-      background: #ffffff;
-      color: #0284c7;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .nav-controls-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
     }
 
     /* Floating Back to Top Button */
@@ -593,200 +548,100 @@
       box-shadow: 0 8px 25px rgba(2, 132, 199, 0.5);
     }
 
-    /* Table horizontal scroll container */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 18px 0;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
-      background: #ffffff;
-    }
-
-    .table-wrapper .hand-table,
-    .table-wrapper table {
-      margin: 0 !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-
     /* ==============================================================
-       EXPLICIT MOBILE FIT MODE (Clean reading card format)
+       PURE AUTOMATIC RESPONSIVE SYSTEM (AUTO-FITS EVERY DEVICE SCREEN)
        ============================================================== */
-    body.mobile-fit-mode {
-      padding: 8px 6px 70px 6px !important;
-      background-color: #f1f5f9 !important;
-    }
-
-    body.mobile-fit-mode .container {
-      gap: 16px !important;
-      max-width: 100% !important;
-      padding: 0 !important;
-    }
-
-    body.mobile-fit-mode .page {
-      border-left: 6px solid #0284c7 !important;
-      border-radius: 12px !important;
-      padding: 22px 14px 20px 16px !important;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06) !important;
-      background-image: none !important;
-      background-color: #ffffff !important;
-    }
-
-    body.mobile-fit-mode .page::before,
-    body.mobile-fit-mode .page::after {
-      display: none !important;
-    }
-
-    body.mobile-fit-mode h1.title {
-      font-size: clamp(1.6rem, 5.5vw, 2.2rem) !important;
-      line-height: 1.25 !important;
-    }
-
-    body.mobile-fit-mode h2.section-heading {
-      font-size: clamp(1.35rem, 4.5vw, 1.8rem) !important;
-      line-height: 1.3 !important;
-      margin-top: 18px !important;
-      margin-bottom: 10px !important;
-    }
-
-    body.mobile-fit-mode p,
-    body.mobile-fit-mode li {
-      font-size: 1.08rem !important;
-      line-height: 1.55 !important;
-    }
-
-    body.mobile-fit-mode .step-title {
-      font-size: 1.45rem !important;
-    }
-
-    body.mobile-fit-mode .qa-box {
-      padding: 12px 14px !important;
-      margin: 14px 0 !important;
-    }
-
-    body.mobile-fit-mode .step-card {
-      padding: 12px 14px !important;
-      margin: 14px 0 !important;
-    }
-
-    body.mobile-fit-mode .flow-row {
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 8px !important;
-    }
-
-    body.mobile-fit-mode .flow-arrow {
-      transform: rotate(90deg);
-      margin: 3px auto;
-    }
-
-    body.mobile-fit-mode .flow-box {
-      min-width: unset !important;
-      width: 100% !important;
-      box-sizing: border-box !important;
-    }
-
-    body.mobile-fit-mode .code-snippet {
-      font-size: 0.88rem !important;
-      padding: 10px 12px !important;
-      white-space: pre-wrap !important;
-      word-break: break-all !important;
-    }
-
-    /* ==============================================================
-       RESPONSIVE MEDIA QUERIES (Auto adapt on Mobile & Tablet)
-       ============================================================== */
-    @media (max-width: 768px) {
+    @media (max-width: 860px) {
       body {
-        padding: 8px 6px 70px 6px;
+        padding: 8px 6px 60px 6px;
+        background-color: #f1f5f9;
       }
       .container {
-        gap: 16px;
         max-width: 100%;
+        gap: 18px;
         padding: 0;
       }
       .page {
-        padding: 22px 12px 20px 20px;
-        border-left: 10px solid #334155;
-        border-radius: 8px;
+        padding: 20px 14px 20px 16px;
+        border-left: 6px solid #0284c7;
+        border-radius: 10px;
+        background-size: 100% 28px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
       }
-      .page::before {
-        left: 14px;
-      }
-      .page::after {
-        display: none;
+      /* Remove binder margin & holes on small screens so zero screen width is lost */
+      .page::before, .page::after {
+        display: none !important;
       }
       .top-nav-container {
         margin: -8px -6px 16px -6px;
-        padding: 10px 10px;
+        padding: 10px 12px;
       }
       .top-nav-header {
         flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
+        align-items: flex-start;
+        gap: 8px;
       }
       .nav-title {
-        font-size: 1.35rem;
+        font-size: 1.4rem;
       }
-      .nav-controls-row {
-        justify-content: space-between;
+      #filter-status {
+        font-size: 0.88rem;
+        padding: 3px 10px;
         width: 100%;
+        box-sizing: border-box;
+        text-align: center;
       }
       h1.title {
-        font-size: clamp(1.6rem, 6vw, 2.2rem);
+        font-size: clamp(1.6rem, 5.5vw, 2.3rem);
         line-height: 1.25;
+        overflow-wrap: break-word;
+        word-break: break-word;
       }
       h2.section-heading {
-        font-size: clamp(1.3rem, 5vw, 1.7rem);
+        font-size: clamp(1.3rem, 4.5vw, 1.8rem);
         line-height: 1.3;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        margin-top: 18px;
+        margin-bottom: 10px;
       }
       p, li {
         font-size: 1.05rem;
+        line-height: 1.55;
       }
       .step-title {
-        font-size: 1.35rem;
+        font-size: 1.4rem;
       }
       .qa-box {
         padding: 12px 14px;
+        margin: 14px 0;
+      }
+      .qa-box .q-title {
+        font-size: 1.35rem;
       }
       .step-card {
         padding: 12px 14px;
-      }
-      .flow-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-      }
-      .flow-arrow {
-        transform: rotate(90deg);
-        margin: 4px auto;
-      }
-      .flow-box {
-        min-width: unset;
-        width: 100%;
-        box-sizing: border-box;
+        margin: 14px 0;
       }
       .code-snippet {
         font-size: 0.88rem;
         padding: 10px 12px;
-        white-space: pre-wrap;
-        word-break: break-all;
       }
       .hand-table, table {
         min-width: 440px;
-        font-size: 0.92rem;
+        font-size: 0.95rem;
       }
       .hand-table th, .hand-table td, table th, table td {
-        padding: 7px 9px;
-      }
-      .img-showcase {
-        max-height: 420px;
-        object-fit: contain;
+        padding: 8px 10px;
       }
     }
 
+    @media print {
+      body { background: #fff; padding: 0; }
+      .top-nav-container, #fab-top { display: none !important; }
+      .page { box-shadow: none; border-left: none; margin: 0; padding: 25px; page-break-after: always; }
+      .page::before, .page::after { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -798,18 +653,8 @@
       <span>📚</span> <strong>Compiler Design Notebook</strong>
       <span style="font-size:1rem; color:#64748b; font-family:'Inter', sans-serif;">(Unit 1 &amp; 2)</span>
     </div>
-    <div class="nav-controls-row">
-      <div id="filter-status">
-        Showing <strong>All 69 Pages</strong> (Complete Notes)
-      </div>
-      <div class="screen-mode-toggle" title="Switch between Mobile Fit view and Notebook Paper view">
-        <button id="mode-notebook" class="mode-btn active" onclick="setScreenMode('notebook')">
-          📖 Notebook
-        </button>
-        <button id="mode-mobile" class="mode-btn" onclick="setScreenMode('mobile')">
-          📱 Mobile Fit
-        </button>
-      </div>
+    <div id="filter-status">
+      Showing <strong>All 69 Pages</strong> (Complete Notes)
     </div>
   </div>
 
@@ -11446,7 +11291,6 @@ function filterTopic(topic) {
   const allPages = document.querySelectorAll('.page');
   const statusBanner = document.getElementById('filter-status');
 
-  // Toggle behavior: If clicking the currently active topic button (second click), or clicking 'all'
   if (currentActiveTopic === topic || topic === 'all') {
     currentActiveTopic = null;
     allPages.forEach(page => {
@@ -11461,7 +11305,6 @@ function filterTopic(topic) {
     });
     statusBanner.innerHTML = 'Showing <strong>All 69 Pages</strong> (Complete Notes)';
   } else {
-    // Filter to selected topic
     currentActiveTopic = topic;
     let count = 0;
     allPages.forEach(page => {
@@ -11485,7 +11328,6 @@ function filterTopic(topic) {
     const topicLabel = activeBtn ? activeBtn.innerText.replace(/[0-9]+/, '').trim() : topic;
     statusBanner.innerHTML = 'Showing <strong>' + count + ' Pages</strong> for <em>"' + topicLabel + '"</em> &nbsp;•&nbsp; <span style="cursor:pointer; text-decoration:underline; font-weight:bold; color:#0284c7;" onclick="filterTopic(\'all\')">Reset to All</span>';
 
-    // Smooth scroll to container start
     const container = document.querySelector('.container');
     if (container) {
       window.scrollTo({
@@ -11496,25 +11338,7 @@ function filterTopic(topic) {
   }
 }
 
-// --- Responsive Screen Mode & Table Wrapping ---
-function setScreenMode(mode) {
-  const notebookBtn = document.getElementById('mode-notebook');
-  const mobileBtn = document.getElementById('mode-mobile');
-  
-  if (mode === 'mobile') {
-    document.body.classList.add('mobile-fit-mode');
-    if (mobileBtn) mobileBtn.classList.add('active');
-    if (notebookBtn) notebookBtn.classList.remove('active');
-    try { localStorage.setItem('compiler_notes_screen_mode', 'mobile'); } catch(e) {}
-  } else {
-    document.body.classList.remove('mobile-fit-mode');
-    if (notebookBtn) notebookBtn.classList.add('active');
-    if (mobileBtn) mobileBtn.classList.remove('active');
-    try { localStorage.setItem('compiler_notes_screen_mode', 'notebook'); } catch(e) {}
-  }
-}
-
-// Auto-wrap all tables with responsive swipe container
+// Auto-wrap all tables with responsive touch scroll container
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('table').forEach(function(table) {
     if (!table.parentElement.classList.contains('table-wrapper')) {
@@ -11524,20 +11348,6 @@ document.addEventListener('DOMContentLoaded', function() {
       wrapper.appendChild(table);
     }
   });
-
-  // Restore saved screen mode or auto-select based on device width
-  try {
-    const savedMode = localStorage.getItem('compiler_notes_screen_mode');
-    if (savedMode === 'mobile' || (!savedMode && window.innerWidth <= 768)) {
-      setScreenMode('mobile');
-    } else {
-      setScreenMode('notebook');
-    }
-  } catch(e) {
-    if (window.innerWidth <= 768) {
-      setScreenMode('mobile');
-    }
-  }
 
   // Floating Back to Top Button
   const fabTop = document.getElementById('fab-top');
@@ -11549,7 +11359,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
-
 </script>
 
 
