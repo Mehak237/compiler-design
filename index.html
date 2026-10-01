@@ -642,6 +642,462 @@
       .page { box-shadow: none; border-left: none; margin: 0; padding: 25px; page-break-after: always; }
       .page::before, .page::after { display: none; }
     }
+  
+    /* ==============================================================
+       A4 PAGE FIT & CONTENT-DENSITY BALANCING SYSTEM
+       ============================================================== */
+    .page {
+      box-sizing: border-box;
+      min-height: 960px;
+      page-break-after: always;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    /* Balanced Image Proportions (Crisp, Legible, Never Overflowing) */
+    .img-showcase {
+      max-width: 100%;
+      max-height: 280px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      margin: 12px auto;
+      display: block;
+    }
+
+    /* Multi-Image Grid for Page 13 Step Walkthrough */
+    .steps-image-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+    }
+
+    .steps-image-grid .grid-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .steps-image-grid .grid-card img {
+      max-height: 170px;
+      width: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+      margin: 6px 0;
+    }
+
+    /* 1. DENSITY SPACIOUS (For short pages: enlarges fonts & padding to fill A4) */
+    .page.density-spacious {
+      justify-content: space-between;
+    }
+    .page.density-spacious h1.title {
+      font-size: 2.7rem;
+      margin-bottom: 16px;
+    }
+    .page.density-spacious h2.section-heading {
+      font-size: 2.1rem;
+      margin-top: 24px;
+      margin-bottom: 16px;
+    }
+    .page.density-spacious p, 
+    .page.density-spacious li {
+      font-size: 1.25rem;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .page.density-spacious .qa-box {
+      padding: 20px 24px;
+      margin: 22px 0;
+    }
+    .page.density-spacious .step-card {
+      padding: 20px 24px;
+      margin: 22px 0;
+    }
+    .page.density-spacious .hand-table th, 
+    .page.density-spacious .hand-table td {
+      padding: 14px 18px;
+      font-size: 1.18rem;
+    }
+    .page.density-spacious .img-showcase {
+      max-height: 330px;
+      margin: 18px auto;
+    }
+
+    /* 2. DENSITY NORMAL (Standard balanced textbook notes) */
+    .page.density-normal h1.title {
+      font-size: 2.3rem;
+      margin-bottom: 12px;
+    }
+    .page.density-normal h2.section-heading {
+      font-size: 1.8rem;
+      margin-top: 18px;
+      margin-bottom: 12px;
+    }
+    .page.density-normal p, 
+    .page.density-normal li {
+      font-size: 1.12rem;
+      line-height: 1.55;
+      margin-bottom: 8px;
+    }
+    .page.density-normal .qa-box {
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .page.density-normal .step-card {
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .page.density-normal .hand-table th, 
+    .page.density-normal .hand-table td {
+      padding: 10px 14px;
+      font-size: 1.05rem;
+    }
+    .page.density-normal .img-showcase {
+      max-height: 270px;
+    }
+
+    /* 3. DENSITY COMPACT (For rich pages with ~600-850 words or multiple items) */
+    .page.density-compact h1.title {
+      font-size: 2.05rem;
+      margin-bottom: 8px;
+    }
+    .page.density-compact h2.section-heading {
+      font-size: 1.6rem;
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+    .page.density-compact p, 
+    .page.density-compact li {
+      font-size: 1.02rem;
+      line-height: 1.42;
+      margin-bottom: 6px;
+    }
+    .page.density-compact .qa-box {
+      padding: 10px 14px;
+      margin: 12px 0;
+    }
+    .page.density-compact .step-card {
+      padding: 10px 14px;
+      margin: 12px 0;
+    }
+    .page.density-compact .step-title {
+      font-size: 1.55rem;
+    }
+    .page.density-compact .hand-table th, 
+    .page.density-compact .hand-table td {
+      padding: 6px 10px;
+      font-size: 0.95rem;
+    }
+    .page.density-compact .flowchart-container {
+      padding: 10px 14px;
+      margin: 12px 0;
+    }
+    .page.density-compact .flow-box {
+      padding: 7px 10px;
+      font-size: 0.88rem;
+    }
+    .page.density-compact .img-showcase {
+      max-height: 230px;
+      margin: 8px auto;
+    }
+
+    /* 4. DENSITY ULTRA-COMPACT (For heavy walkthrough pages with >900 words) */
+    .page.density-ultra-compact h1.title {
+      font-size: 1.85rem;
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+    .page.density-ultra-compact h2.section-heading {
+      font-size: 1.45rem;
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+    .page.density-ultra-compact p, 
+    .page.density-ultra-compact li {
+      font-size: 0.94rem;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+    .page.density-ultra-compact .qa-box {
+      padding: 8px 12px;
+      margin: 8px 0;
+    }
+    .page.density-ultra-compact .step-card {
+      padding: 8px 12px;
+      margin: 8px 0;
+    }
+    .page.density-ultra-compact .step-title {
+      font-size: 1.4rem;
+    }
+    .page.density-ultra-compact .hand-table th, 
+    .page.density-ultra-compact .hand-table td {
+      padding: 4px 8px;
+      font-size: 0.88rem;
+    }
+    .page.density-ultra-compact .flowchart-container {
+      padding: 8px 12px;
+      margin: 8px 0;
+    }
+    .page.density-ultra-compact .flow-box {
+      padding: 5px 8px;
+      font-size: 0.82rem;
+    }
+    .page.density-ultra-compact .img-showcase {
+      max-height: 190px;
+      margin: 6px auto;
+    }
+    .page.density-ultra-compact .code-snippet {
+      padding: 6px 10px;
+      font-size: 0.84rem;
+    }
+
+    @media (max-width: 768px) {
+      .steps-image-grid {
+        grid-template-columns: 1fr;
+      }
+      .page {
+        min-height: auto;
+      }
+    }
+
+  
+    /* ==============================================================
+       A4 PAGE FIT & CONTENT-DENSITY BALANCING SYSTEM
+       ============================================================== */
+    @page {
+      size: A4 portrait;
+      margin: 8mm 8mm 8mm 8mm;
+    }
+
+    .page {
+      box-sizing: border-box;
+      min-height: 980px;
+      page-break-after: always;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      margin-bottom: 30px;
+    }
+
+    /* Balanced Image Proportions (Crisp, Legible, Perfectly Scaled) */
+    .img-showcase, img {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      margin: 10px auto;
+      display: block;
+    }
+
+    /* 1. DENSITY SPACIOUS (For short pages: expands font & padding to fill A4) */
+    .page.density-spacious {
+      justify-content: space-between;
+    }
+    .page.density-spacious h1.title {
+      font-size: 2.7rem;
+      margin-bottom: 18px;
+      line-height: 1.25;
+    }
+    .page.density-spacious h2.section-heading {
+      font-size: 2.1rem;
+      margin-top: 24px;
+      margin-bottom: 16px;
+    }
+    .page.density-spacious p, 
+    .page.density-spacious li {
+      font-size: 1.24rem;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .page.density-spacious .qa-box {
+      padding: 20px 24px;
+      margin: 22px 0;
+    }
+    .page.density-spacious .qa-box .q-title {
+      font-size: 1.85rem;
+    }
+    .page.density-spacious .step-card {
+      padding: 20px 24px;
+      margin: 22px 0;
+    }
+    .page.density-spacious .hand-table th, 
+    .page.density-spacious .hand-table td {
+      padding: 14px 18px;
+      font-size: 1.18rem;
+    }
+    .page.density-spacious .img-showcase {
+      max-height: 330px;
+      margin: 16px auto;
+    }
+
+    /* 2. DENSITY NORMAL (Standard balanced textbook notes) */
+    .page.density-normal h1.title {
+      font-size: 2.25rem;
+      margin-bottom: 12px;
+    }
+    .page.density-normal h2.section-heading {
+      font-size: 1.75rem;
+      margin-top: 18px;
+      margin-bottom: 12px;
+    }
+    .page.density-normal p, 
+    .page.density-normal li {
+      font-size: 1.10rem;
+      line-height: 1.55;
+      margin-bottom: 8px;
+    }
+    .page.density-normal .qa-box {
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .page.density-normal .step-card {
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .page.density-normal .hand-table th, 
+    .page.density-normal .hand-table td {
+      padding: 10px 14px;
+      font-size: 1.05rem;
+    }
+    .page.density-normal .img-showcase {
+      max-height: 270px;
+    }
+
+    /* 3. DENSITY COMPACT (For rich pages with ~600-850 words or multiple items) */
+    .page.density-compact h1.title {
+      font-size: 1.95rem;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .page.density-compact h2.section-heading {
+      font-size: 1.55rem;
+      margin-top: 14px;
+      margin-bottom: 8px;
+    }
+    .page.density-compact p, 
+    .page.density-compact li {
+      font-size: 1.0rem;
+      line-height: 1.42;
+      margin-bottom: 6px;
+    }
+    .page.density-compact .qa-box {
+      padding: 10px 14px;
+      margin: 10px 0;
+    }
+    .page.density-compact .step-card {
+      padding: 10px 14px;
+      margin: 10px 0;
+    }
+    .page.density-compact .step-title {
+      font-size: 1.5rem;
+    }
+    .page.density-compact .hand-table th, 
+    .page.density-compact .hand-table td {
+      padding: 6px 10px;
+      font-size: 0.94rem;
+    }
+    .page.density-compact .flowchart-container {
+      padding: 10px 14px;
+      margin: 10px 0;
+    }
+    .page.density-compact .flow-box {
+      padding: 6px 10px;
+      font-size: 0.88rem;
+    }
+    .page.density-compact .img-showcase {
+      max-height: 230px;
+      margin: 8px auto;
+    }
+
+    /* 4. DENSITY ULTRA-COMPACT (For heavy walkthrough pages with >900 words) */
+    .page.density-ultra-compact h1.title {
+      font-size: 1.78rem;
+      margin-bottom: 6px;
+      line-height: 1.18;
+    }
+    .page.density-ultra-compact h2.section-heading {
+      font-size: 1.4rem;
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+    .page.density-ultra-compact p, 
+    .page.density-ultra-compact li {
+      font-size: 0.92rem;
+      line-height: 1.34;
+      margin-bottom: 4px;
+    }
+    .page.density-ultra-compact .qa-box {
+      padding: 8px 12px;
+      margin: 8px 0;
+    }
+    .page.density-ultra-compact .step-card {
+      padding: 8px 12px;
+      margin: 8px 0;
+    }
+    .page.density-ultra-compact .step-title {
+      font-size: 1.35rem;
+    }
+    .page.density-ultra-compact .hand-table th, 
+    .page.density-ultra-compact .hand-table td {
+      padding: 4px 8px;
+      font-size: 0.86rem;
+    }
+    .page.density-ultra-compact .flowchart-container {
+      padding: 8px 12px;
+      margin: 8px 0;
+    }
+    .page.density-ultra-compact .flow-box {
+      padding: 5px 8px;
+      font-size: 0.80rem;
+    }
+    .page.density-ultra-compact .img-showcase {
+      max-height: 185px;
+      margin: 6px auto;
+    }
+    .page.density-ultra-compact .code-snippet {
+      padding: 6px 10px;
+      font-size: 0.82rem;
+    }
+
+    /* 5. DENSITY MULTI-IMAGE (For step-by-step walkthroughs with multiple diagrams) */
+    .page.density-multi-image h1.title {
+      font-size: 2.0rem;
+      margin-bottom: 8px;
+    }
+    .page.density-multi-image p,
+    .page.density-multi-image li {
+      font-size: 0.98rem;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .page.density-multi-image .step-card {
+      padding: 10px 14px;
+      margin: 10px 0;
+    }
+    .page.density-multi-image .img-showcase {
+      max-height: 170px;
+      margin: 6px auto;
+    }
+
+    @media (max-width: 860px) {
+      .page {
+        min-height: auto !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -732,7 +1188,7 @@
 <div class="container">
 
   <!-- ==================== PAGE 00: MASTER COMPILER ARCHITECTURE & DATA FLOW ==================== -->
-  <div class="page" data-topic="phases">
+  <div class="page density-compact" data-topic="phases">
     <div class="page-header">
       <span class="subject-tag">🏛️ Core Architecture & Pipeline Flow</span>
       <span class="exam-badge">⭐ 14 Marks Guaranteed Master Question</span>
@@ -748,7 +1204,7 @@
     <h2 class="section-heading">1. Hand-Drawn Reference Notebook Illustration</h2>
     <div style="text-align: center; margin: 20px 0;">
       <!-- Embedded generated handwritten notebook image 1 -->
-      <img src="compiler_phases_page1_1790659972914.jpg" alt="Compiler Phases & Structure Handwritten Page" class="img-showcase" style="max-height: 720px; object-fit: contain;">
+      <img src="compiler_phases_page1_1790659972914.jpg" alt="Compiler Phases & Structure Handwritten Page" class="img-showcase" >
       <p style="color:#64748b; font-size:0.95rem; margin-top:6px;"><em>Handwritten Blueprint: 6 Phases, Analysis/Synthesis Division, Symbol Table, and Error Handler</em></p>
     </div>
 
@@ -887,7 +1343,7 @@
 
 
   <!-- ==================== PAGE 01: SYMBOL TABLE & TOKEN NUMERICALS ==================== -->
-  <div class="page" data-topic="phases">
+  <div class="page density-compact" data-topic="phases">
     <div class="page-header">
       <span class="subject-tag">🧮 Numerical Vault & Core Pillars</span>
       <span class="exam-badge">🔥 High-Scoring University Numericals</span>
@@ -1082,7 +1538,7 @@
 
 
   <!-- ==================== PAGE 0: HOW & WHY VAULT ==================== -->
-  <div class="page" data-topic="phases">
+  <div class="page density-spacious" data-topic="phases">
     <div class="page-header">
       <span class="subject-tag">🧠 The "How & Why" Question Vault</span>
       <span class="exam-badge">🎯 Top Viva & Exam Doubts</span>
@@ -1145,7 +1601,7 @@
 
 
   <!-- ==================== PAGE 1: ARCHITECTURE ==================== -->
-  <div class="page" data-topic="phases">
+  <div class="page density-normal" data-topic="phases">
     <div class="page-header">
       <span class="subject-tag">📚 Compiler Design — Master Page 1</span>
       <span class="exam-badge">⭐ 100% Guaranteed 10/14 Marks</span>
@@ -1155,7 +1611,7 @@
 
     <h2 class="section-heading">1. Hand-Drawn Reference Illustration</h2>
     <div style="text-align: center;">
-      <img src="compiler_phases_page1_1790659972914.jpg" alt="Compiler Phases Notebook Page" class="img-showcase" style="max-height: 700px; object-fit: contain;">
+      <img src="compiler_phases_page1_1790659972914.jpg" alt="Compiler Phases Notebook Page" class="img-showcase" >
     </div>
 
     <h2 class="section-heading">2. Visual Architecture Flowchart</h2>
@@ -1276,7 +1732,7 @@
 
 
   <!-- ==================== PAGE 2: TRACING ==================== -->
-  <div class="page" data-topic="phases">
+  <div class="page density-compact" data-topic="phases">
     <div class="page-header">
       <span class="subject-tag">✍️ Numerical Deep Dive</span>
       <span class="exam-badge">🔥 Step-by-Step "How This Came"</span>
@@ -1285,7 +1741,7 @@
     <h1 class="title">Tracing: position = initial + rate * 60</h1>
 
     <div style="text-align: center;">
-      <img src="expression_trace_page2_1790660015108.jpg" alt="Expression Trace Notebook Page" class="img-showcase" style="max-height: 700px; object-fit: contain;">
+      <img src="expression_trace_page2_1790660015108.jpg" alt="Expression Trace Notebook Page" class="img-showcase" >
     </div>
 
     <h2 class="section-heading">Visual Pipeline of the Expression</h2>
@@ -1432,7 +1888,7 @@ STF   id1, R1         ; Store result from register R1 into 'position'
 
 
   <!-- ==================== PAGE 2A: LEXICAL ANALYZER GENERATOR (LEX / FLEX) — FOUNDATIONS & PIPELINE ==================== -->
-  <div class="page" data-topic="lex">
+  <div class="page density-normal" data-topic="lex">
     <div class="page-header">
       <span class="subject-tag">⚙️ Automated Scanner Construction</span>
       <span class="exam-badge">⭐ 10 Marks Theory &amp; Lab Compulsory</span>
@@ -1584,7 +2040,7 @@ STF   id1, R1         ; Store result from register R1 into 'position'
 
 
   <!-- ==================== PAGE 2B: LEX INTERNAL ENGINE, VARIABLES & CONFLICT RESOLUTION ==================== -->
-  <div class="page" data-topic="lex">
+  <div class="page density-normal" data-topic="lex">
     <div class="page-header">
       <span class="subject-tag">🧠 Automata Engine &amp; Variables</span>
       <span class="exam-badge">⭐ High-Scoring Technical Essentials</span>
@@ -1735,7 +2191,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 3: COMPILER CONSTRUCTION TOOLS ==================== -->
-  <div class="page" data-topic="tools">
+  <div class="page density-normal" data-topic="tools">
     <div class="page-header">
       <span class="subject-tag">🛠️ Compiler Construction Tools</span>
       <span class="exam-badge">⭐ 7 to 10 Marks Guaranteed Question</span>
@@ -1750,7 +2206,7 @@ int yywrap() { return 1; }
 
     <h2 class="section-heading">1. Hand-Drawn Reference Illustration</h2>
     <div style="text-align: center;">
-      <img src="compiler_tools_page3_1790660712279.jpg" alt="Compiler Construction Tools Handwritten Notebook Page" class="img-showcase" style="max-height: 700px; object-fit: contain;">
+      <img src="compiler_tools_page3_1790660712279.jpg" alt="Compiler Construction Tools Handwritten Notebook Page" class="img-showcase" >
     </div>
 
     <h2 class="section-heading">2. Visual Flowcharts of the Tools</h2>
@@ -1827,7 +2283,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 5: SINGLE-PASS VS MULTI-PASS ==================== -->
-  <div class="page" data-topic="tools">
+  <div class="page density-normal" data-topic="tools">
     <div class="page-header">
       <span class="subject-tag">❓ Unit 1 — Question 1</span>
       <span class="exam-badge">⭐ 5 Marks Short-Answer Question</span>
@@ -1917,7 +2373,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 6: TOKEN VS LEXEME VS PATTERN ==================== -->
-  <div class="page" data-topic="buffering">
+  <div class="page density-spacious" data-topic="buffering">
     <div class="page-header">
       <span class="subject-tag">❓ Unit 1 — Question 2</span>
       <span class="exam-badge">⭐ 5 Marks High-Probability Question</span>
@@ -1995,7 +2451,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 7: BUFFER PAIRS & SENTINELS ==================== -->
-  <div class="page" data-topic="buffering">
+  <div class="page density-normal" data-topic="buffering">
     <div class="page-header">
       <span class="subject-tag">❓ Unit 1 — Question 3</span>
       <span class="exam-badge">⭐ 5 to 7 Marks Technical Question</span>
@@ -2010,7 +2466,7 @@ int yywrap() { return 1; }
 
     <h2 class="section-heading">1. Hand-Drawn Reference Illustration</h2>
     <div style="text-align: center;">
-      <img src="lexical_buffering_page4_1790661181418.jpg" alt="Input Buffering and Sentinels Notebook Page" class="img-showcase" style="max-height: 700px; object-fit: contain;">
+      <img src="lexical_buffering_page4_1790661181418.jpg" alt="Input Buffering and Sentinels Notebook Page" class="img-showcase" >
     </div>
 
     <h2 class="section-heading">2. Visual Buffer Pairs Diagram</h2>
@@ -2115,7 +2571,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 8: LEXICAL ERROR RECOVERY STRATEGIES ==================== -->
-  <div class="page" data-topic="buffering">
+  <div class="page density-ultra-compact" data-topic="buffering">
     <div class="page-header">
       <span class="subject-tag">❓ Unit 1 — Error Handling</span>
       <span class="exam-badge">⭐ 5 to 7 Marks Guaranteed Question</span>
@@ -2147,7 +2603,7 @@ int yywrap() { return 1; }
     <h2 class="section-heading">1. Hand-Drawn Reference Illustration (Mind Map)</h2>
     <div style="text-align: center;">
       <!-- Embedded generated handwritten notebook image 5 -->
-      <img src="lexical_errors_page5_1790662004882.jpg" alt="Lexical Error Recovery Strategies Mind Map" class="img-showcase" style="max-height: 700px; object-fit: contain;">
+      <img src="lexical_errors_page5_1790662004882.jpg" alt="Lexical Error Recovery Strategies Mind Map" class="img-showcase" >
     </div>
 
     <h2 class="section-heading">2. Visual Infographic & Mind Map of the 5 Strategies</h2>
@@ -2460,7 +2916,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 9: THOMPSON'S CONSTRUCTION MASTERCLASS ==================== -->
-  <div class="page" data-topic="thompson">
+  <div class="page density-ultra-compact" data-topic="thompson">
     <div class="page-header">
       <span class="subject-tag">📐 Thompson's Construction — Master Blueprint</span>
       <span class="exam-badge">⭐ 7 to 10 Marks Guaranteed Problem</span>
@@ -2504,7 +2960,7 @@ int yywrap() { return 1; }
     <h2 class="section-heading">1. Hand-Drawn Reference Illustration</h2>
     <div style="text-align: center;">
       <!-- Embedded generated handwritten notebook image 6 -->
-      <img src="thompson_nfa_page6_1790662548759.jpg" alt="Thompson's Construction Handwritten Notebook Page" class="img-showcase" style="max-height: 700px; object-fit: contain;">
+      <img src="thompson_nfa_page6_1790662548759.jpg" alt="Thompson's Construction Handwritten Notebook Page" class="img-showcase" >
     </div>
 
     <h2 class="section-heading">2. The 5 Fundamental Lego Building Blocks (Thompson's Rules)</h2>
@@ -2627,7 +3083,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 10: STEP-BY-STEP THOMPSON NFA (PROBLEM 1) ==================== -->
-  <div class="page" data-topic="thompson">
+  <div class="page density-multi-image" data-topic="thompson">
     <div class="page-header">
       <span class="subject-tag">✍️ Step-by-Step Construction Walkthrough</span>
       <span class="exam-badge">🔥 10 Marks Guaranteed Problem</span>
@@ -2656,7 +3112,7 @@ int yywrap() { return 1; }
 
       <!-- Dedicated Step 1 Diagram Generated -->
       <div style="text-align:center; margin: 20px 0;">
-        <img src="nfa_step1_basic_symbols_1790663558180.jpg" alt="Step 1: Sub-NFAs for Base Symbols a and b" class="img-showcase" style="max-height: 520px; object-fit: contain;">
+        <img src="nfa_step1_basic_symbols_1790663558180.jpg" alt="Step 1: Sub-NFAs for Base Symbols a and b" class="img-showcase" >
         <p style="color:#64748b; font-size:0.95rem; margin-top:6px;"><em>Handwritten Diagram 1: Base symbol transitions (2)──a──>(3) and (4)──b──>(5)</em></p>
       </div>
     </div>
@@ -2677,7 +3133,7 @@ int yywrap() { return 1; }
 
       <!-- Dedicated Step 2 Diagram Generated -->
       <div style="text-align:center; margin: 20px 0;">
-        <img src="nfa_step1_step2_union_1790663285883.jpg" alt="Step 2: Union Rule for (a | b)" class="img-showcase" style="max-height: 550px; object-fit: contain;">
+        <img src="nfa_step1_step2_union_1790663285883.jpg" alt="Step 2: Union Rule for (a | b)" class="img-showcase" >
         <p style="color:#64748b; font-size:0.95rem; margin-top:6px;"><em>Handwritten Diagram 2: Union sub-machine branching from (1) and converging at (6)</em></p>
       </div>
     </div>
@@ -2702,7 +3158,7 @@ int yywrap() { return 1; }
 
       <!-- Dedicated Step 3 Diagram Generated -->
       <div style="text-align:center; margin: 20px 0;">
-        <img src="nfa_step3_kleene_star_1790663452703.jpg" alt="Step 3: Kleene Star Rule for (a | b)*" class="img-showcase" style="max-height: 580px; object-fit: contain;">
+        <img src="nfa_step3_kleene_star_1790663452703.jpg" alt="Step 3: Kleene Star Rule for (a | b)*" class="img-showcase" >
         <p style="color:#64748b; font-size:0.95rem; margin-top:6px;"><em>Handwritten Diagram 3: Kleene star sub-machine with top bypass ε and bottom loopback ε</em></p>
       </div>
     </div>
@@ -2725,7 +3181,7 @@ int yywrap() { return 1; }
 
       <!-- Dedicated Step 4 Diagram Generated -->
       <div style="text-align:center; margin: 20px 0;">
-        <img src="nfa_step4_concatenation_1790663512113.jpg" alt="Step 4: Concatenation with a . b . b" class="img-showcase" style="max-height: 480px; object-fit: contain;">
+        <img src="nfa_step4_concatenation_1790663512113.jpg" alt="Step 4: Concatenation with a . b . b" class="img-showcase" >
         <p style="color:#64748b; font-size:0.95rem; margin-top:6px;"><em>Handwritten Diagram 4: Linear concatenation sequence (7)──a──>(8)──b──>(9)──b──>((10))</em></p>
       </div>
     </div>
@@ -2742,13 +3198,13 @@ int yywrap() { return 1; }
 
       <!-- Dedicated Step 5 Master Diagram Generated -->
       <div style="text-align:center; margin: 25px 0;">
-        <img src="nfa_step4_step5_master_1790663481257.jpg" alt="Complete Combined Master NFA" class="img-showcase" style="max-height: 650px; object-fit: contain;">
+        <img src="nfa_step4_step5_master_1790663481257.jpg" alt="Complete Combined Master NFA" class="img-showcase" >
         <p style="color:#64748b; font-size:1rem; margin-top:8px;"><em>Handwritten Master Diagram: Fully assembled Thompson NFA for (a | b)* abb</em></p>
       </div>
 
       <!-- Additional Full Notebook Page Showcase -->
       <div style="text-align:center; margin: 20px 0;">
-        <img src="thompson_steps_page7_1790663052139.jpg" alt="All 5 Steps Summary Sheet" class="img-showcase" style="max-height: 600px; object-fit: contain;">
+        <img src="thompson_steps_page7_1790663052139.jpg" alt="All 5 Steps Summary Sheet" class="img-showcase" >
         <p style="color:#64748b; font-size:0.95rem; margin-top:6px;"><em>Handwritten Reference Sheet: All 5 steps shown side-by-side with state numbering</em></p>
       </div>
 
@@ -2784,7 +3240,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 11: BINARY VARIANT & PRACTICE VAULT ==================== -->
-  <div class="page" data-topic="thompson">
+  <div class="page density-spacious" data-topic="thompson">
     <div class="page-header">
       <span class="subject-tag">📚 Variations & Practice Vault</span>
       <span class="exam-badge">⭐ Score Booster</span>
@@ -2816,7 +3272,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 12: WRITING REGULAR EXPRESSIONS (OVERVIEW) ==================== -->
-  <div class="page" data-topic="regex">
+  <div class="page density-normal" data-topic="regex">
     <div class="page-header">
       <span class="subject-tag">✍️ Unit 1 — Lexical Specifications</span>
       <span class="exam-badge">⭐ 7 to 10 Marks Guaranteed Topic</span>
@@ -2852,7 +3308,7 @@ int yywrap() { return 1; }
     <h2 class="section-heading">1. Hand-Drawn Reference Notebook Illustration</h2>
     <div style="text-align: center; margin: 20px 0;">
       <!-- Embedded generated handwritten notebook image 12 -->
-      <img src="re_formal_languages_page12_1790663827244.jpg" alt="Writing Regular Expressions for Formal Language Descriptions Handwritten Page" class="img-showcase" style="max-height: 720px; object-fit: contain;">
+      <img src="re_formal_languages_page12_1790663827244.jpg" alt="Writing Regular Expressions for Formal Language Descriptions Handwritten Page" class="img-showcase" >
       <p style="color:#64748b; font-size:0.95rem; margin-top:6px;"><em>Handwritten Blueprint: C Identifiers, Even a's DFA, and Floating-Point Constant Architecture</em></p>
     </div>
 
@@ -2903,7 +3359,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 13: CORE PROBLEM 1 — C IDENTIFIERS ==================== -->
-  <div class="page" data-topic="regex">
+  <div class="page density-compact" data-topic="regex">
     <div class="page-header">
       <span class="subject-tag">🏷️ Lexical Specification — Problem 1</span>
       <span class="exam-badge">⭐ 5 Marks Standard Question</span>
@@ -3066,7 +3522,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 14: CORE PROBLEM 2 — STRINGS WITH EVEN a's ==================== -->
-  <div class="page" data-topic="regex">
+  <div class="page density-compact" data-topic="regex">
     <div class="page-header">
       <span class="subject-tag">🔢 Formal Language Theory — Problem 2</span>
       <span class="exam-badge">🔥 High-Probability Exam Question</span>
@@ -3210,7 +3666,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 15: CORE PROBLEM 3 — FLOATING-POINT CONSTANTS ==================== -->
-  <div class="page" data-topic="regex">
+  <div class="page density-compact" data-topic="regex">
     <div class="page-header">
       <span class="subject-tag">🔬 Compiler Scanner — Problem 3</span>
       <span class="exam-badge">⭐ 7 Marks High-Yield Question</span>
@@ -3405,7 +3861,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 16: MEGA EXAM PRACTICE VAULT ==================== -->
-  <div class="page" data-topic="regex">
+  <div class="page density-spacious" data-topic="regex">
     <div class="page-header">
       <span class="subject-tag">🏆 Mega Exam Vault — 8 Variations Solved</span>
       <span class="exam-badge">🔥 Full Revision Suite</span>
@@ -3500,7 +3956,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 17: DIRECT DFA CONSTRUCTION & STATE ELIMINATION ==================== -->
-  <div class="page" data-topic="dfa-elimination">
+  <div class="page density-normal" data-topic="dfa-elimination">
     <div class="page-header">
       <span class="subject-tag">📐 Finite Automata & Equivalence</span>
       <span class="exam-badge">⭐ 10 Marks Guaranteed Topic</span>
@@ -3563,7 +4019,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 18: PROBLEM 1 — DFA ENDING WITH 01 ==================== -->
-  <div class="page" data-topic="dfa-elimination">
+  <div class="page density-ultra-compact" data-topic="dfa-elimination">
     <div class="page-header">
       <span class="subject-tag">🎯 Solved Problem 1 — Direct DFA</span>
       <span class="exam-badge">🔥 5 to 7 Marks Standard Question</span>
@@ -3950,7 +4406,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 19: PROBLEM 2 — DFA FOR SUBSTRING "aba" ==================== -->
-  <div class="page" data-topic="dfa-elimination">
+  <div class="page density-ultra-compact" data-topic="dfa-elimination">
     <div class="page-header">
       <span class="subject-tag">🎯 Solved Problem 2 — Substring Automaton</span>
       <span class="exam-badge">🔥 7 Marks High-Yield Question</span>
@@ -4360,7 +4816,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 20: STATE ELIMINATION METHOD MASTER GUIDE ==================== -->
-  <div class="page" data-topic="dfa-elimination">
+  <div class="page density-normal" data-topic="dfa-elimination">
     <div class="page-header">
       <span class="subject-tag">🧠 Universal Conversion Algorithm</span>
       <span class="exam-badge">⭐ 10 Marks Algorithm Proof</span>
@@ -4523,7 +4979,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 21: SUBSET CONSTRUCTION — FOUNDATIONS & INTUITION ==================== -->
-  <div class="page" data-topic="subset">
+  <div class="page density-compact" data-topic="subset">
     <div class="page-header">
       <span class="subject-tag">🎓 Unit 1 / Unit 2 — Core Engine</span>
       <span class="exam-badge">⭐ 10 Marks Compulsory Topic</span>
@@ -4670,7 +5126,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 22: MASTER SOLVED PROBLEM — (a|b)*abb ==================== -->
-  <div class="page" data-topic="subset">
+  <div class="page density-ultra-compact" data-topic="subset">
     <div class="page-header">
       <span class="subject-tag">🎯 Master Solved Problem</span>
       <span class="exam-badge">🔥 University Classic 10 Marks</span>
@@ -5024,7 +5480,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 23: RESULTING DFA & VERIFICATION ==================== -->
-  <div class="page" data-topic="subset">
+  <div class="page density-compact" data-topic="subset">
     <div class="page-header">
       <span class="subject-tag">🏆 Complete Solution Artifact</span>
       <span class="exam-badge">🎯 Full 10/10 Score Format</span>
@@ -5191,7 +5647,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 24: DFA MINIMIZATION — FOUNDATIONS & HOPCROFT PARTITIONING ==================== -->
-  <div class="page" data-topic="minimization">
+  <div class="page density-normal" data-topic="minimization">
     <div class="page-header">
       <span class="subject-tag">⚡ Unit 1 / Unit 2 — Automata Optimization</span>
       <span class="exam-badge">⭐ 10 Marks Lengthy Problem (10–12 Min Trap)</span>
@@ -5311,7 +5767,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 25: MASTER SOLVED PROBLEM — 6-STATE DFA MINIMIZATION ==================== -->
-  <div class="page" data-topic="minimization">
+  <div class="page density-ultra-compact" data-topic="minimization">
     <div class="page-header">
       <span class="subject-tag">🎯 Master Solved Problem</span>
       <span class="exam-badge">🔥 University Classic 10 Marks</span>
@@ -5714,7 +6170,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 26: RESULTING MINIMIZED DFA & TABLE-FILLING METHOD ==================== -->
-  <div class="page" data-topic="minimization">
+  <div class="page density-compact" data-topic="minimization">
     <div class="page-header">
       <span class="subject-tag">🏆 Reduced Automaton & Verification</span>
       <span class="exam-badge">🎯 Full 10/10 Score Format</span>
@@ -5910,7 +6366,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 27: ROLE OF PARSER & MASTER ARCHITECTURAL BLOCK DIAGRAM ==================== -->
-  <div class="page" data-topic="parser">
+  <div class="page density-normal" data-topic="parser">
     <div class="page-header">
       <span class="subject-tag">🏛️ Unit 2 — Syntax Analysis Core</span>
       <span class="exam-badge">⭐ 10 Marks Compulsory Master Question</span>
@@ -6053,7 +6509,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 28: PARSER TAXONOMY & CONTEXT-FREE GRAMMARS ==================== -->
-  <div class="page" data-topic="parser">
+  <div class="page density-normal" data-topic="parser">
     <div class="page-header">
       <span class="subject-tag">🌲 Parser Taxonomy &amp; CFG Basics</span>
       <span class="exam-badge">⭐ 7 to 10 Marks Classification Tree</span>
@@ -6219,7 +6675,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 29: DERIVATIONS & SENTENTIAL FORMS (LMD VS RMD) ==================== -->
-  <div class="page" data-topic="derivations">
+  <div class="page density-compact" data-topic="derivations">
     <div class="page-header">
       <span class="subject-tag">🌳 Derivations &amp; Grammar Parsing</span>
       <span class="exam-badge">⭐ 10 Marks Derivation Master Question</span>
@@ -6379,7 +6835,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 30: PARSE TREES, YIELD & THE AMBIGUITY THEOREM ==================== -->
-  <div class="page" data-topic="derivations">
+  <div class="page density-normal" data-topic="derivations">
     <div class="page-header">
       <span class="subject-tag">🌲 Parse Trees &amp; Ambiguity Proofs</span>
       <span class="exam-badge">⭐ 7 to 10 Marks Ambiguity Question</span>
@@ -6520,7 +6976,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 31: GRAMMAR AMBIGUITY — THE 2-PROOF METHOD & ARITHMETIC CASE STUDY ==================== -->
-  <div class="page" data-topic="ambiguity">
+  <div class="page density-normal" data-topic="ambiguity">
     <div class="page-header">
       <span class="subject-tag">⚠️ Grammar Ambiguity Masterclass</span>
       <span class="exam-badge">⭐ 10 Marks Proving Ambiguity Question</span>
@@ -6669,7 +7125,7 @@ int yywrap() { return 1; }
 
 
   <!-- ==================== PAGE 32: THE DANGLING-ELSE AMBIGUITY, DISAMBIGUATION & UNDECIDABILITY ==================== -->
-  <div class="page" data-topic="ambiguity">
+  <div class="page density-normal" data-topic="ambiguity">
     <div class="page-header">
       <span class="subject-tag">🚨 Famous Compiler Ambiguity</span>
       <span class="exam-badge">🔥 10 Marks Dangling-Else Problem</span>
@@ -6832,7 +7288,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
     <!-- ==================== PAGE 33: ERROR RECOVERY STRATEGIES (PANIC MODE & PHRASE LEVEL) ==================== -->
-  <div class="page" data-page="33" data-topic="error-recovery">
+  <div class="page density-normal" data-page="33" data-topic="error-recovery">
     <div class="page-header">
       <div class="page-badge">UNIT 2: SYNTAX ANALYSIS &bull; ERROR HANDLING</div>
     </div>
@@ -7023,7 +7479,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 34: PHRASE-LEVEL, ERROR PRODUCTIONS & GLOBAL CORRECTION ==================== -->
-  <div class="page" data-page="34" data-topic="error-recovery">
+  <div class="page density-compact" data-page="34" data-topic="error-recovery">
     <div class="page-header">
       <div class="page-badge">UNIT 2: ADVANCED RECOVERY &bull; COMPARISON MATRIX</div>
     </div>
@@ -7218,7 +7674,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 35: PARSER COMPARISON (LL(1) VS LR(1)) ==================== -->
-  <div class="page" data-page="35" data-topic="comparison">
+  <div class="page density-normal" data-page="35" data-topic="comparison">
     <div class="page-header">
       <div class="page-badge">UNIT 2: PARSER COMPARISON &bull; TOP-DOWN VS BOTTOM-UP</div>
     </div>
@@ -7373,7 +7829,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 36: BOTTOM-UP COMPARISON (SLR VS CLR VS LALR) ==================== -->
-  <div class="page" data-page="36" data-topic="comparison">
+  <div class="page density-normal" data-page="36" data-topic="comparison">
     <div class="page-header">
       <div class="page-badge">UNIT 2: BOTTOM-UP SPECTRUM &bull; LR PARSER HIERARCHY</div>
     </div>
@@ -7551,7 +8007,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 37: IMMEDIATE LEFT RECURSION ==================== -->
-  <div class="page" data-page="37" data-topic="preprocessing">
+  <div class="page density-normal" data-page="37" data-topic="preprocessing">
     <div class="page-header">
       <div class="page-badge">UNIT 2: GRAMMAR PRE-PROCESSING &bull; LEFT RECURSION</div>
     </div>
@@ -7724,7 +8180,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 38: INDIRECT LEFT RECURSION ==================== -->
-  <div class="page" data-page="38" data-topic="preprocessing">
+  <div class="page density-normal" data-page="38" data-topic="preprocessing">
     <div class="page-header">
       <div class="page-badge">UNIT 2: ADVANCED PRE-PROCESSING &bull; NON-IMMEDIATE RECURSION</div>
     </div>
@@ -7843,7 +8299,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 39: LEFT FACTORING ==================== -->
-  <div class="page" data-page="39" data-topic="preprocessing">
+  <div class="page density-normal" data-page="39" data-topic="preprocessing">
     <div class="page-header">
       <div class="page-badge">UNIT 2: GRAMMAR PRE-PROCESSING &bull; PREDICTIVE PARSING</div>
     </div>
@@ -7998,7 +8454,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 40: SOLVED NUMERICALS (LEFT RECURSION) ==================== -->
-  <div class="page" data-page="40" data-topic="preprocessing">
+  <div class="page density-compact" data-page="40" data-topic="preprocessing">
     <div class="page-header">
       <div class="page-badge">UNIT 2: STEP-BY-STEP WORKED EXAMPLES &bull; LEFT RECURSION</div>
     </div>
@@ -8130,7 +8586,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 41: SOLVED NUMERICALS (LEFT FACTORING & PIPELINE) ==================== -->
-  <div class="page" data-page="41" data-topic="preprocessing">
+  <div class="page density-normal" data-page="41" data-topic="preprocessing">
     <div class="page-header">
       <div class="page-badge">UNIT 2: STEP-BY-STEP WORKED EXAMPLES &bull; LEFT FACTORING &amp; PIPELINE</div>
     </div>
@@ -8261,7 +8717,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
     <!-- ==================== PAGE 42: COMPUTATION OF FIRST() ==================== -->
-  <div class="page" data-page="42" data-topic="first-follow" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="42" data-topic="first-follow" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fef08a; border:2px dashed #ca8a04; color:#854d0e; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">📝 UNIT 2: PARSER PREREQUISITES &bull; FIRST() SETS</div>
     </div>
@@ -8445,7 +8901,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 43: COMPUTATION OF FOLLOW() ==================== -->
-  <div class="page" data-page="43" data-topic="first-follow" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="43" data-topic="first-follow" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fbcfe8; border:2px dashed #db2777; color:#9d174d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">📝 UNIT 2: PARSER PREREQUISITES &bull; FOLLOW() SETS</div>
     </div>
@@ -8619,7 +9075,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 44: MASTER SOLVED NUMERICAL WORKBOOK ==================== -->
-  <div class="page" data-page="44" data-topic="first-follow" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="44" data-topic="first-follow" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fef08a; border:2px dashed #ca8a04; color:#854d0e; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">📝 MASTER EXAM WORKBOOK &bull; STEP-BY-STEP SOLVED</div>
     </div>
@@ -8745,7 +9201,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 48: SHIFT-REDUCE PARSING ARCHITECTURE ==================== -->
-  <div class="page" data-page="48" data-topic="shift-reduce" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="48" data-topic="shift-reduce" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#e0e7ff; border:2px dashed #4338ca; color:#312e81; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🏛️ UNIT 2: BOTTOM-UP PARSING &bull; SHIFT-REDUCE ENGINE</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ 10 Marks Compulsory Master Question</span>
@@ -8892,7 +9348,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 49: ARITHMETIC GRAMMAR STACK TRACING ==================== -->
-  <div class="page" data-page="49" data-topic="shift-reduce" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="49" data-topic="shift-reduce" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#dcfce7; border:2px dashed #16a34a; color:#14532d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🧮 UNIT 2: STACK TRACING WORKBOOK &bull; ARITHMETIC GRAMMAR</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">🔥 Guaranteed 10 Marks Numerical</span>
@@ -9071,7 +9527,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 50: PARENTHESES & PARSER CONFLICTS ==================== -->
-  <div class="page" data-page="50" data-topic="shift-reduce" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="50" data-topic="shift-reduce" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fce7f3; border:2px dashed #db2777; color:#9d174d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🔬 UNIT 2: ADVANCED TRACING &bull; CONFLICTS &amp; PARENTHESES</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ 10 Marks Viva &amp; Exam Traps</span>
@@ -9169,7 +9625,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
     <!-- ==================== PAGE 51: LL(1) PARSER FOUNDATIONS & ARCHITECTURE (POINTS 1-6) ==================== -->
-  <div class="page" data-page="51" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="51" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#eff6ff; border:2px dashed #3b82f6; color:#1e40af; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🏛️ UNIT 2: TOP-DOWN PARSING &bull; LL(1) ARCHITECTURE</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 1 to 6 &bull; 10 Marks Master Question</span>
@@ -9296,7 +9752,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 52: GRAMMAR, FIRST & FOLLOW SETS (POINTS 7-17) ==================== -->
-  <div class="page" data-page="52" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-compact" data-page="52" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fdf2f8; border:2px dashed #db2777; color:#9d174d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🧮 UNIT 2: GRAMMAR, FIRST &amp; FOLLOW DERIVATIONS</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 7 to 17 &bull; 10 Marks Derivations</span>
@@ -9407,7 +9863,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 53: TABLE FILLING RULES & LL(1) PARSING TABLE (POINTS 18-21) ==================== -->
-  <div class="page" data-page="53" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="53" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fefce8; border:2px dashed #ca8a04; color:#854d0e; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">📊 UNIT 2: PARSING TABLE CONSTRUCTION RULES</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 18 to 21 &bull; 10 Marks Construction</span>
@@ -9539,7 +9995,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 54: ACTUAL PARSING EXECUTION & TRACE (POINTS 22-23) ==================== -->
-  <div class="page" data-page="54" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-compact" data-page="54" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#dcfce7; border:2px dashed #16a34a; color:#14532d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">⚡ UNIT 2: STRING PARSING EXECUTION &bull; STACK SIMULATION</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 22 &amp; 23 &bull; 10 Marks Stack Trace</span>
@@ -9625,7 +10081,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 55: CONDITIONS, ALGORITHM, FLOWCHART & SUMMARY (POINTS 24-29) ==================== -->
-  <div class="page" data-page="55" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="55" data-topic="ll1" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fefce8; border:2px dashed #ca8a04; color:#854d0e; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">⚖️ UNIT 2: ALGORITHM, CONDITIONS &amp; TRADE-OFFS</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 24 to 29 &bull; Complete Summary</span>
@@ -9769,7 +10225,7 @@ open_stmt ➔ if expr then stmt
 
 
   <!-- ==================== PAGE 56: LR PARSER FOUNDATIONS, MEANING & SHIFT-REDUCE (POINTS 1-6) ==================== -->
-  <div class="page" data-page="56" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="56" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#e0f2fe; border:2px dashed #0284c7; color:#0369a1; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🏗️ UNIT 2: BOTTOM-UP PARSING &bull; LR FOUNDATIONS</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 1 to 6 &bull; 10 Marks Viva &amp; Exam Question</span>
@@ -9874,7 +10330,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 57: LR ARCHITECTURE, STACK STATES & STRING TRACE (POINTS 7-15) ==================== -->
-  <div class="page" data-page="57" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-compact" data-page="57" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#eff6ff; border:2px dashed #2563eb; color:#1e40af; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">⚙️ UNIT 2: LR ARCHITECTURE &bull; ACTION/GOTO &bull; STATE TRACE</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 7 to 15 &bull; 10 Marks Master Question</span>
@@ -9998,7 +10454,7 @@ open_stmt ➔ if expr then stmt
     <!-- Embedded Gemini Handwritten Visual 1 -->
     <div class="note-card" style="background:#ffffff; border:2px solid #cbd5e1; border-radius:12px; box-shadow:3px 5px 12px rgba(0,0,0,0.06); padding:16px; margin-top:14px; text-align:center;">
       <h3 style="font-family:'Kalam', cursive; color:#0f3460; margin:0 0 10px 0; font-size:1.25rem;">🎨 Handwritten Reference Diagram: LR Architecture &amp; String Simulation</h3>
-      <img src="lr_parser_architecture_stack_1790834814161.jpg" alt="LR Architecture, Stack States & Shift-Reduce Engine" class="img-showcase" style="max-height:640px; border-radius:8px; border:1px solid #e2e8f0;">
+      <img src="lr_parser_architecture_stack_1790834814161.jpg" alt="LR Architecture, Stack States & Shift-Reduce Engine" class="img-showcase" >
       <p style="font-family:'Patrick Hand', cursive; font-size:1.05rem; color:#64748b; margin:6px 0 0 0;">
         <em>Figure 57.1: Handwritten notes illustrating LR parsing program, alternating stack states, ACTION/GOTO tables, and the 'ab&#36;' trace.</em>
       </p>
@@ -10007,7 +10463,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 58: LR(0) ITEMS, CLOSURE & GOTO (POINTS 16-23) ==================== -->
-  <div class="page" data-page="58" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="58" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fce7f3; border:2px dashed #db2777; color:#9d174d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🎯 UNIT 2: LR(0) ITEMS &bull; CLOSURE &amp; GOTO &bull; STATE CREATION</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 16 to 23 &bull; 10 Marks Construction Question</span>
@@ -10085,7 +10541,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 59: 4 LR TYPES, ANALOGY & MASTER COMPARISON (POINTS 24-27) ==================== -->
-  <div class="page" data-page="59" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="59" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fef3c7; border:2px dashed #d97706; color:#92400e; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">⚖️ UNIT 2: LR CLASSIFICATION &bull; LL(1) vs LR &bull; COMPARISON TABLE</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 24 to 27 &bull; Guaranteed 10 Marks Table</span>
@@ -10227,7 +10683,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 60: MASTER 13-STEP LR ROADMAP & CONFLICT DIAGNOSIS (POINT 28 + DEEP-DIVE) ==================== -->
-  <div class="page" data-page="60" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="60" data-topic="lr-parsing" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#dcfce7; border:2px dashed #16a34a; color:#14532d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🗺️ UNIT 2: MASTER 13-STEP LR ROADMAP &bull; CONFLICT DIAGNOSIS</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Point 28 &bull; Complete Study Blueprint</span>
@@ -10337,7 +10793,7 @@ open_stmt ➔ if expr then stmt
     <!-- Embedded Gemini Handwritten Visual 2 -->
     <div class="note-card" style="background:#ffffff; border:2px solid #cbd5e1; border-radius:12px; box-shadow:3px 5px 12px rgba(0,0,0,0.06); padding:16px; margin-top:14px; text-align:center;">
       <h3 style="font-family:'Kalam', cursive; color:#0f3460; margin:0 0 10px 0; font-size:1.25rem;">🎨 Handwritten Reference Diagram: LR(0) Items, Closure &amp; 13-Step Roadmap</h3>
-      <img src="lr_items_closure_roadmap_1790834838867.jpg" alt="LR(0) Items, Closure, GOTO and 13-Step Roadmap" class="img-showcase" style="max-height:640px; border-radius:8px; border:1px solid #e2e8f0;">
+      <img src="lr_items_closure_roadmap_1790834838867.jpg" alt="LR(0) Items, Closure, GOTO and 13-Step Roadmap" class="img-showcase" >
       <p style="font-family:'Patrick Hand', cursive; font-size:1.05rem; color:#64748b; margin:6px 0 0 0;">
         <em>Figure 60.1: Handwritten notes illustrating the dot progression, augmented grammar, closure/GOTO transition, 4 LR families, and the complete 13-milestone exam roadmap.</em>
       </p>
@@ -10347,7 +10803,7 @@ open_stmt ➔ if expr then stmt
 
 
   <!-- ==================== PAGE 61: SLR(1) FUNDAMENTALS & CANONICAL COLLECTION (POINTS 1-16) ==================== -->
-  <div class="page" data-page="61" data-topic="slr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="61" data-topic="slr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fef3c7; border:2px dashed #d97706; color:#92400e; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🎯 UNIT 2: SLR(1) PARSER &bull; CANONICAL COLLECTION</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 1 to 16 &bull; 10 Marks Construction Question</span>
@@ -10486,7 +10942,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 62: SLR(1) FOLLOW SETS & PARSING TABLE (POINTS 17-25) ==================== -->
-  <div class="page" data-page="62" data-topic="slr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="62" data-topic="slr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#dcfce7; border:2px dashed #16a34a; color:#14532d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">📊 UNIT 2: SLR(1) TABLE CONSTRUCTION &bull; FOLLOW SETS</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 17 to 25 &bull; 10 Marks Guaranteed Table</span>
@@ -10629,7 +11085,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 63: STRING TRACE & SLR vs LR(0) vs LL(1) (POINTS 26-35) ==================== -->
-  <div class="page" data-page="63" data-topic="slr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="63" data-topic="slr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#eff6ff; border:2px dashed #3b82f6; color:#1e40af; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">⚡ UNIT 2: STRING TRACE &bull; SLR COMPARISON &bull; FORMULA</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 26 to 35 &bull; Complete 8-Step Trace</span>
@@ -10740,7 +11196,7 @@ open_stmt ➔ if expr then stmt
     <!-- Embedded Gemini Handwritten Visual 1 -->
     <div class="note-card" style="background:#ffffff; border:2px solid #cbd5e1; border-radius:12px; box-shadow:3px 5px 12px rgba(0,0,0,0.06); padding:16px; margin-top:14px; text-align:center;">
       <h3 style="font-family:'Kalam', cursive; color:#0f3460; margin:0 0 10px 0; font-size:1.25rem;">🎨 Handwritten Reference Diagram: SLR(1) Collection, Table &amp; Trace</h3>
-      <img src="slr1_parser_table_trace_1790835431721.jpg" alt="SLR(1) Canonical Collection, Parsing Table & Trace" class="img-showcase" style="max-height:640px; border-radius:8px; border:1px solid #e2e8f0;">
+      <img src="slr1_parser_table_trace_1790835431721.jpg" alt="SLR(1) Canonical Collection, Parsing Table & Trace" class="img-showcase" >
       <p style="font-family:'Patrick Hand', cursive; font-size:1.05rem; color:#64748b; margin:6px 0 0 0;">
         <em>Figure 63.1: Handwritten notes showing canonical items I0-I6, FOLLOW sets, parsing table, and the 'cdd&#36;' execution trace.</em>
       </p>
@@ -10749,7 +11205,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 64: CLR(1) CANONICAL LR PARSER (CLR POINTS 1-10) ==================== -->
-  <div class="page" data-page="64" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="64" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fce7f3; border:2px dashed #db2777; color:#9d174d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">⚡ UNIT 2: CLR(1) PARSER &bull; LR(1) ITEMS &bull; LOOKAHEADS</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ CLR Points 1 to 10 &bull; 10 Marks Theory &amp; Items</span>
@@ -10832,7 +11288,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 65: LALR(1) LOOK-AHEAD LR PARSER (LALR POINTS 11-23) ==================== -->
-  <div class="page" data-page="65" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="65" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#faf5ff; border:2px dashed #9333ea; color:#6b21a8; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🧩 UNIT 2: LALR(1) PARSER &bull; CORE MERGING &bull; PRACTICAL PARSER</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ LALR Points 11 to 23 &bull; Yacc/Bison Architecture</span>
@@ -10907,7 +11363,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 66: MASTER 4-FAMILY COMPARISON & EXAM FORMULAS (CLR/LALR 24-26) ==================== -->
-  <div class="page" data-page="66" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-normal" data-page="66" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fef3c7; border:2px dashed #d97706; color:#92400e; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🏆 UNIT 2: MASTER 4-FAMILY COMPARISON &bull; EXAM FORMULAS</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Points 24 to 26 &bull; Master 10-Row Table</span>
@@ -11029,7 +11485,7 @@ open_stmt ➔ if expr then stmt
     <!-- Embedded Gemini Handwritten Visual 2 -->
     <div class="note-card" style="background:#ffffff; border:2px solid #cbd5e1; border-radius:12px; box-shadow:3px 5px 12px rgba(0,0,0,0.06); padding:16px; margin-top:14px; text-align:center;">
       <h3 style="font-family:'Kalam', cursive; color:#0f3460; margin:0 0 10px 0; font-size:1.25rem;">🎨 Handwritten Reference Diagram: CLR(1) vs LALR(1) &amp; Memory Tricks</h3>
-      <img src="clr_lalr_parser_merging_1790835451905.jpg" alt="CLR(1) vs LALR(1) Items & Core Merging" class="img-showcase" style="max-height:640px; border-radius:8px; border:1px solid #e2e8f0;">
+      <img src="clr_lalr_parser_merging_1790835451905.jpg" alt="CLR(1) vs LALR(1) Items & Core Merging" class="img-showcase" >
       <p style="font-family:'Patrick Hand', cursive; font-size:1.05rem; color:#64748b; margin:6px 0 0 0;">
         <em>Figure 66.1: Handwritten notes illustrating LR(1) items, lookahead calculation, LALR state merging, power pyramid, and memory tricks.</em>
       </p>
@@ -11039,7 +11495,7 @@ open_stmt ➔ if expr then stmt
 
 
   <!-- ==================== PAGE 67: CLR(1) COMPLETE SOLVED EXAMPLE & TRACE ==================== -->
-  <div class="page" data-page="67" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-compact" data-page="67" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#fce7f3; border:2px dashed #db2777; color:#9d174d; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🏆 UNIT 2: CLR(1) SOLVED EXAMPLE &bull; 10-STATE TABLE &bull; TRACE</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Guaranteed 10 Marks Full Walkthrough</span>
@@ -11172,7 +11628,7 @@ open_stmt ➔ if expr then stmt
     <!-- Embedded Gemini Visual: CLR(1) Solved Example -->
     <div class="note-card" style="background:#ffffff; border:2px solid #cbd5e1; border-radius:12px; box-shadow:3px 5px 12px rgba(0,0,0,0.06); padding:16px; margin-top:14px; text-align:center;">
       <h3 style="font-family:'Kalam', cursive; color:#0f3460; margin:0 0 10px 0; font-size:1.25rem;">🎨 Handwritten Reference Diagram: 10-State CLR(1) Collection &amp; Table</h3>
-      <img src="clr1_complete_canonical_table_1790835855697.jpg" alt="CLR(1) Solved Example: 10-State Collection and Table" class="img-showcase" style="max-height:640px; border-radius:8px; border:1px solid #e2e8f0;">
+      <img src="clr1_complete_canonical_table_1790835855697.jpg" alt="CLR(1) Solved Example: 10-State Collection and Table" class="img-showcase" >
       <p style="font-family:'Patrick Hand', cursive; font-size:1.05rem; color:#64748b; margin:6px 0 0 0;">
         <em>Figure 67.1: Handwritten notes illustrating all 10 CLR(1) states with explicit lookaheads and the complete 10-row parsing table.</em>
       </p>
@@ -11181,7 +11637,7 @@ open_stmt ➔ if expr then stmt
   </div>
 
   <!-- ==================== PAGE 68: LALR(1) COMPLETE SOLVED EXAMPLE & TRACE ==================== -->
-  <div class="page" data-page="68" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
+  <div class="page density-ultra-compact" data-page="68" data-topic="clr-lalr" style="background:#fffdfa; background-image:linear-gradient(#f1f5f9 1px, transparent 1px); background-size:100% 32px;">
     <div class="page-header">
       <div class="page-badge" style="background:#faf5ff; border:2px dashed #9333ea; color:#6b21a8; font-family:'Kalam', cursive; font-size:1rem; padding:4px 14px;">🧩 UNIT 2: LALR(1) SOLVED EXAMPLE &bull; MERGED TABLE &bull; TRACE</div>
       <span class="exam-badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-family:'Patrick Hand', cursive; font-size:1.05rem; padding:3px 12px; border-radius:12px; font-weight:bold;">⭐ Guaranteed 10 Marks Merging Walkthrough</span>
@@ -11273,7 +11729,7 @@ open_stmt ➔ if expr then stmt
     <!-- Embedded Gemini Visual: LALR(1) Solved Example -->
     <div class="note-card" style="background:#ffffff; border:2px solid #cbd5e1; border-radius:12px; box-shadow:3px 5px 12px rgba(0,0,0,0.06); padding:16px; margin-top:14px; text-align:center;">
       <h3 style="font-family:'Kalam', cursive; color:#0f3460; margin:0 0 10px 0; font-size:1.25rem;">🎨 Handwritten Reference Diagram: LALR(1) Core Merging &amp; Trace</h3>
-      <img src="lalr1_merging_table_trace_1790835873453.jpg" alt="LALR(1) Solved Example: State Merging and Trace" class="img-showcase" style="max-height:640px; border-radius:8px; border:1px solid #e2e8f0;">
+      <img src="lalr1_merging_table_trace_1790835873453.jpg" alt="LALR(1) Solved Example: State Merging and Trace" class="img-showcase" >
       <p style="font-family:'Patrick Hand', cursive; font-size:1.05rem; color:#64748b; margin:6px 0 0 0;">
         <em>Figure 68.1: Handwritten notes illustrating the core merging step (I36, I47, I89), the 7-row LALR table, and the 'cdd&#36;' trace.</em>
       </p>
