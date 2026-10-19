@@ -825,7 +825,7 @@
 
   <div class="topic-scroll" id="topic-menu">
     <button class="topic-btn active" data-topic="all" onclick="filterTopic('all')">
-      🌟 All Notes <span class="count-badge">97</span>
+      🌟 All Notes <span class="count-badge">98</span>
     </button>
     <button class="topic-btn" data-topic="phases" onclick="filterTopic('phases')">
       🏛️ Phases &amp; Architecture <span class="count-badge">5</span>
@@ -912,7 +912,7 @@
       ⚙️ Unit 4: Code Generation <span class="count-badge">7</span>
     </button>
     <button class="topic-btn" data-topic="opt" onclick="filterTopic('opt')">
-      🚀 Unit 4: Code Optimization &amp; Runtime <span class="count-badge">4</span>
+      🚀 Unit 4: Code Optimization &amp; Runtime <span class="count-badge">5</span>
     </button>
   </div>
 </div>
@@ -14741,152 +14741,487 @@ eq S_0$$
   </div>
 
 
-  <!-- PAGE 96: AVAILABLE EXPRESSIONS DATA FLOW ANALYSIS -->
+    <!-- PAGE 96: AVAILABLE EXPRESSIONS DATA FLOW ANALYSIS -->
   <div class="page" data-topic="opt">
     <div class="page-header">
-      <span class="subject-tag">🚀 Unit 4: Global Optimization Analysis</span>
-      <span class="exam-badge">⭐ 14 Marks Solved Numerical</span>
+      <span class="subject-tag">🚀 Unit 4: Global Data Flow Optimization</span>
+      <span class="exam-badge">🔥 14 Marks University Favorite</span>
     </div>
 
-    <h1 class="title">Available Expressions Data Flow Analysis for Global Optimization</h1>
+    <h1 class="title">Available Expressions Analysis: Theory, Visual Flowchart &amp; Iterative Trace</h1>
 
     <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
       <div class="q-title" style="color:#1d4ed8;">
-        <span>📊</span> What is an Available Expression?
+        <span>📊</span> Rigorous Mathematical Definition of an Available Expression
       </div>
       <div class="a-content">
-        An expression $x + y$ is <strong>available</strong> at a program point $p$ if:
+        An expression $e = x 	ext{ op } y$ is <strong>available</strong> at program point $p$ if and only if:
         <ol style="margin:4px 0 0 16px; line-height:1.6;">
-          <li>Every execution path from the program entry to point $p$ evaluates $x + y$.</li>
-          <li>After the last evaluation of $x + y$, neither $x$ nor $y$ has been redefined (killed).</li>
+          <li><strong>Every single execution path</strong> from program Entry to point $p$ evaluates $x 	ext{ op } y$.</li>
+          <li>After the last evaluation of $x 	ext{ op } y$ on each path, <strong>neither $x$ nor $y$ is redefined</strong> (killed).</li>
         </ol>
-        If an expression is available at block entry, its recomputation can be completely eliminated globally!
+        Because this property must hold on <em>all paths</em>, Available Expressions is a <strong>Forward Must-Analysis</strong> ($igcap$ meet operator).
       </div>
     </div>
 
-    <h2 class="section-heading">1. Data Flow Transfer Equations</h2>
+    <h2 class="section-heading">1. Authentic Hand-Drawn Visual Blueprint: Available Expressions CFG &amp; Transfer</h2>
+    <div class="hand-diagram-card" style="background:#fffdf9; border:2px dashed #d2b48c; padding:16px; border-radius:12px; margin:16px 0;">
+      <svg viewBox="0 0 760 270" style="width:100%; height:auto; font-family:'Caveat', cursive;">
+        <!-- Defs for arrows and markers -->
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e3a8a"/>
+          </marker>
+        </defs>
+
+        <!-- Block 1 (Entry) -->
+        <rect x="290" y="15" width="180" height="60" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+        <text x="380" y="38" font-size="20" font-weight="bold" fill="#0369a1" text-anchor="middle">Block B1 (Entry)</text>
+        <text x="380" y="60" font-size="16" fill="#0c4a6e" text-anchor="middle">computes a + b  [e_gen={a+b}]</text>
+
+        <!-- Down arrows from B1 to B2 and B3 -->
+        <path d="M 330 75 L 190 115" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow)"/>
+        <path d="M 430 75 L 570 115" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow)"/>
+
+        <!-- Block 2 (Left path) -->
+        <rect x="90" y="120" width="200" height="65" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+        <text x="190" y="142" font-size="20" font-weight="bold" fill="#854d0e" text-anchor="middle">Block B2 (Left Branch)</text>
+        <text x="190" y="162" font-size="15" fill="#713f12" text-anchor="middle">computes c - d; a = 5 (KILLS a+b!)</text>
+        <text x="190" y="178" font-size="14" fill="#dc2626" text-anchor="middle">e_kill = {a+b}</text>
+
+        <!-- Block 3 (Right path) -->
+        <rect x="470" y="120" width="200" height="65" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="570" y="142" font-size="20" font-weight="bold" fill="#15803d" text-anchor="middle">Block B3 (Right Branch)</text>
+        <text x="570" y="162" font-size="15" fill="#14532d" text-anchor="middle">computes e * f  (clean, no kills)</text>
+        <text x="570" y="178" font-size="14" fill="#15803d" text-anchor="middle">OUT[B3] = {a+b, e*f}</text>
+
+        <!-- Arrows into B4 (Join) -->
+        <path d="M 190 185 L 330 215" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow)"/>
+        <path d="M 570 185 L 430 215" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow)"/>
+
+        <!-- Block 4 (Join) -->
+        <rect x="270" y="210" width="220" height="50" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+        <text x="380" y="232" font-size="20" font-weight="bold" fill="#b91c1c" text-anchor="middle">Block B4 (Join Node)</text>
+        <text x="380" y="250" font-size="15" fill="#991b1b" text-anchor="middle">IN[B4] = OUT[B2] ∩ OUT[B3] = ∅</text>
+      </svg>
+      <p class="diagram-caption" style="text-align:center; font-family:'Caveat', cursive; font-size:16px; margin:4px 0 0 0; color:#555;">
+        <em>Fig 96.1: Visual Control Flow Graph illustrating Forward Must-Analysis meeting at join node B4 via intersection (&cap;).</em>
+      </p>
+    </div>
+
+    <h2 class="section-heading">2. Data Flow Equations &amp; Bit-Vector Representation</h2>
     <div class="rules-card">
-      $$	ext{IN}[B] = igcap_{P \in 	ext{Pred}(B)} 	ext{OUT}[P]$$
-      $$	ext{OUT}[B] = e\_	ext{gen}[B] \cup ig(	ext{IN}[B] - e\_	ext{kill}[B]ig)$$
-      <ul style="margin:6px 0 0 16px; line-height:1.6;">
-        <li>$e\_	ext{gen}[B]$: Set of expressions evaluated in $B$ whose operands are not subsequently redefined in $B$.</li>
-        <li>$e\_	ext{kill}[B]$: Set of all expressions in the entire program whose operands are mutated/overwritten in $B$.</li>
-        <li>Initial boundary condition: $	ext{OUT}[B_1] = e\_	ext{gen}[B_1]$; for all other blocks, $	ext{OUT}[B] = U$ (Universal set of expressions).</li>
+      <ul style="margin:0; padding-left:18px; line-height:1.7;">
+        <li><strong>Meet Rule (At Entry of Block B):</strong>
+          $$	ext{IN}[B] = igcap_{P \in 	ext{Pred}(B)} 	ext{OUT}[P]$$
+        </li>
+        <li><strong>Transfer Function (Across Block B):</strong>
+          $$	ext{OUT}[B] = e\_	ext{gen}[B] \cup ig(	ext{IN}[B] - e\_	ext{kill}[B]ig)$$
+        </li>
+        <li><strong>Boundary &amp; Initialization:</strong>
+          $$	ext{OUT}[	ext{Entry}] = \emptyset; \quad 	ext{OUT}[B] = U \quad (	ext{Universal Set for all } B 
+eq 	ext{Entry})$$
+        </li>
       </ul>
     </div>
 
-    <h2 class="section-heading">2. University Solved Problem: Iterative Data Flow Trace</h2>
+    <h2 class="section-heading">3. Complete Step-by-Step Solved Iterative Numerical</h2>
     <div class="example-box">
-      <strong>Problem:</strong> Trace the Available Expressions analysis for the CFG with universal set $U = \{a+b, c-d, e*f\}$:
-      <ul style="margin:4px 0 0 16px; line-height:1.6;">
-        <li>Block $B_1$: computes $a+b$, defines nothing else &rarr; $e\_	ext{gen} = \{a+b\}$, $e\_	ext{kill} = \emptyset$.</li>
-        <li>Block $B_2$: computes $c-d$, mutates $a$ ($a = 5$) &rarr; $e\_	ext{gen} = \{c-d\}$, $e\_	ext{kill} = \{a+b\}$.</li>
-        <li>Block $B_3$: computes $e*f$, defines nothing else &rarr; $e\_	ext{gen} = \{e*f\}$, $e\_	ext{kill} = \emptyset$.</li>
-        <li>Flow edges: $B_1 	o B_2$, $B_1 	o B_3$, and $B_2 	o B_4$, $B_3 	o B_4$.</li>
+      <strong>Problem:</strong> Given Universal Set $U = \{e_1: a+b,\; e_2: c-d,\; e_3: e*f\}$ with bit-vector format $[e_1, e_2, e_3]$:
+      <ul style="margin:4px 0 0 16px; line-height:1.5;">
+        <li>$B_1$: $e\_	ext{gen} = \{e_1\} = [1, 0, 0]$, $e\_	ext{kill} = \emptyset = [0, 0, 0]$</li>
+        <li>$B_2$: $e\_	ext{gen} = \{e_2\} = [0, 1, 0]$, $e\_	ext{kill} = \{e_1\} = [1, 0, 0]$</li>
+        <li>$B_3$: $e\_	ext{gen} = \{e_3\} = [0, 0, 1]$, $e\_	ext{kill} = \emptyset = [0, 0, 0]$</li>
+        <li>$B_4$: $e\_	ext{gen} = \emptyset = [0, 0, 0]$, $e\_	ext{kill} = \emptyset = [0, 0, 0]$</li>
       </ul>
 
-      <div class="section-title" style="font-size:15px; margin-top:10px;">Iteration Table:</div>
-      <table class="comparison-table">
-        <thead>
-          <tr>
-            <th>Block</th>
-            <th>$e\_	ext{gen}[B]$</th>
-            <th>$e\_	ext{kill}[B]$</th>
-            <th>$	ext{IN}[B]$</th>
-            <th>$	ext{OUT}[B]$</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>$B_1$</td>
-            <td>$\{a+b\}$</td>
-            <td>$\emptyset$</td>
-            <td>$\emptyset$</td>
-            <td>$\{a+b\}$</td>
-          </tr>
-          <tr>
-            <td>$B_2$</td>
-            <td>$\{c-d\}$</td>
-            <td>$\{a+b\}$</td>
-            <td>$	ext{OUT}[B_1] = \{a+b\}$</td>
-            <td>$\{c-d\} \cup (\{a+b\} - \{a+b\}) = \{c-d\}$</td>
-          </tr>
-          <tr>
-            <td>$B_3$</td>
-            <td>$\{e*f\}$</td>
-            <td>$\emptyset$</td>
-            <td>$	ext{OUT}[B_1] = \{a+b\}$</td>
-            <td>$\{e*f\} \cup \{a+b\} = \{a+b, e*f\}$</td>
-          </tr>
-          <tr>
-            <td>$B_4$</td>
-            <td>$\emptyset$</td>
-            <td>$\emptyset$</td>
-            <td>$	ext{OUT}[B_2] \cap 	ext{OUT}[B_3] = \{c-d\} \cap \{a+b, e*f\} = \mathbf{\emptyset}$</td>
-            <td>$\mathbf{\emptyset}$</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="how-it-came" style="margin-top:8px;">
-        <strong>Result:</strong> At the entrance of $B_4$, no expression is globally available because $a$ was killed along the path through $B_2$!
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Full Iterative Convergence Trace:</div>
+      <div class="table-responsive">
+        <table class="hand-table">
+          <thead>
+            <tr>
+              <th>Iteration</th>
+              <th>Block</th>
+              <th>$	ext{IN}[B] = igcap 	ext{OUT}[P]$</th>
+              <th>$	ext{OUT}[B] = e\_	ext{gen} \cup (	ext{IN} - e\_	ext{kill})$</th>
+              <th>Bit-Vector Representation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Initial (0)</strong></td>
+              <td>$B_1$<br>$B_2, B_3, B_4$</td>
+              <td>$\emptyset$<br>$U$</td>
+              <td>$	ext{OUT}[B_1] = e\_	ext{gen} = \{e_1\}$<br>$	ext{OUT}[B] = U = \{e_1, e_2, e_3\}$</td>
+              <td>$[1, 0, 0]$<br>$[1, 1, 1]$</td>
+            </tr>
+            <tr>
+              <td><strong>Iteration 1</strong></td>
+              <td>$B_2$<br>$B_3$<br>$B_4$</td>
+              <td>$	ext{OUT}[B_1] = \{e_1\}$<br>$	ext{OUT}[B_1] = \{e_1\}$<br>$	ext{OUT}[B_2] \cap 	ext{OUT}[B_3]$</td>
+              <td>$\{e_2\} \cup (\{e_1\} - \{e_1\}) = \mathbf{\{e_2\}}$<br>$\{e_3\} \cup (\{e_1\} - \emptyset) = \mathbf{\{e_1, e_3\}}$<br>$\{e_2\} \cap \{e_1, e_3\} = \mathbf{\emptyset}$</td>
+              <td>$[0, 1, 0]$<br>$[1, 0, 1]$<br>$[0, 0, 0]$</td>
+            </tr>
+            <tr>
+              <td><strong>Iteration 2 (Check)</strong></td>
+              <td>$B_2, B_3, B_4$</td>
+              <td>Values unchanged</td>
+              <td>$	ext{OUT}$ sets unchanged &rarr; <strong>Fixed Point Reached!</strong></td>
+              <td>No change</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>🎉 Final Result:</strong> At Block $B_4$, $	ext{IN}[B_4] = \emptyset$. Neither $a+b$ nor $c-d$ is available at $B_4$ because $a$ was killed along the path through $B_2$!
+      </div>
+    </div>
+
+    <h2 class="section-heading">4. Practice Exam Questions with Complete Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: Why Initialize with Universal Set U?</span>
+        <span class="step-badge">GATE Conceptual</span>
+      </div>
+      <p><strong>Question:</strong> Why must $	ext{OUT}[B]$ be initialized to $U$ rather than $\emptyset$ for all blocks except Entry?</p>
+      <div class="code-snippet">Answer: Because the meet operator is Intersection (&cap;). If initialized to empty set (∅), the intersection would trivially remain empty forever, missing valid available expressions!</div>
+    </div>
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Q2: Forward vs Backward Classification</span>
+        <span class="step-badge">University Exam</span>
+      </div>
+      <p><strong>Question:</strong> Classify Available Expressions vs Reaching Definitions vs Live Variables.</p>
+      <div class="code-snippet">
+&bull; Available Expressions: Forward, Must-analysis (uses &cap;)
+&bull; Reaching Definitions: Forward, May-analysis (uses &cup;)
+&bull; Live Variables: Backward, May-analysis (uses &cup;)
+      </div>
+    </div>
+    <div class="step-card s3">
+      <div class="step-header">
+        <span class="step-title">Q3: Expression Preservation</span>
+        <span class="step-badge">Quick Numerical</span>
+      </div>
+      <p><strong>Question:</strong> If block $B$ contains <code>x = y + z; a = 10; b = x * 2;</code>, which expressions does $B$ kill?</p>
+      <div class="code-snippet">Answer: Kills all expressions containing 'x', 'a', or 'b' anywhere in the program. Does NOT kill 'y + z'.</div>
     </div>
   </div>
 
 
-  <!-- PAGE 97: HEAP STORAGE ALLOCATION TRACE -->
+  <!-- PAGE 97: HEAP STORAGE ALLOCATION TRACE & FRAGMENTATION -->
   <div class="page" data-topic="opt">
     <div class="page-header">
       <span class="subject-tag">🚀 Unit 4: Memory Management Numericals</span>
-      <span class="exam-badge">⭐ 14 Marks Solved Numerical</span>
+      <span class="exam-badge">🔥 14 Marks Solved Numerical</span>
     </div>
 
-    <h1 class="title">Heap Storage Allocation Trace: First-Fit, Best-Fit &amp; Buddy System</h1>
+    <h1 class="title">Heap Storage Allocation: Visual Flowcharts, Fragmentation &amp; Buddy System</h1>
 
     <div class="qa-box" style="background:#fefce8; border-color:#eab308;">
       <div class="q-title" style="color:#a16207;">
-        <span>💾</span> Memory Fragmentation in Dynamic Heap Allocation
+        <span>💾</span> Memory Fragmentation: Mathematical Formulations
       </div>
       <div class="a-content">
         <ul style="margin:4px 0 0 16px; line-height:1.6;">
-          <li><strong>Internal Fragmentation:</strong> Memory allocated inside a partition that is unused by the requested block.</li>
-          <li><strong>External Fragmentation:</strong> Total free memory exists to satisfy a request, but it is split into non-contiguous scattered holes.</li>
+          <li><strong>Internal Fragmentation:</strong> Unused space inside an allocated partition:  
+            $$	ext{Internal Frag} = 	ext{Allocated Partition Size} - 	ext{Requested Process Size}$$
+          </li>
+          <li><strong>External Fragmentation:</strong> Free memory that cannot be allocated because it is split into non-contiguous holes:  
+            $$	ext{External Frag} = \sum_{	ext{all holes } h_i} 	ext{Size}(h_i) \quad (	ext{where each } 	ext{Size}(h_i) < 	ext{Requested Size})$$
+          </li>
         </ul>
       </div>
     </div>
 
-    <h2 class="section-heading">1. Solved Problem: First-Fit vs Best-Fit vs Worst-Fit Trace</h2>
-    <div class="example-box">
-      <strong>Problem:</strong> Given memory partitions of sizes: <code>100 KB, 500 KB, 200 KB, 300 KB, 600 KB</code> (in that order), place processes of sizes: <code>212 KB, 417 KB, 112 KB, 426 KB</code>. Compare allocation results:
+    <h2 class="section-heading">1. Authentic Visual Flowchart: Heap Allocation Decision Logic</h2>
+    <div class="hand-diagram-card" style="background:#fffdf9; border:2px dashed #d2b48c; padding:16px; border-radius:12px; margin:16px 0;">
+      <svg viewBox="0 0 760 250" style="width:100%; height:auto; font-family:'Caveat', cursive;">
+        <defs>
+          <marker id="arrow2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e3a8a"/>
+          </marker>
+        </defs>
 
-      <div class="section-title" style="font-size:15px; margin-top:10px;">1. First-Fit Allocation (First hole big enough):</div>
-      <ul style="margin:4px 0 0 16px; line-height:1.6;">
-        <li>212 KB &rarr; allocated in <strong>500 KB</strong> block (leaving 288 KB).</li>
-        <li>417 KB &rarr; allocated in <strong>600 KB</strong> block (leaving 183 KB).</li>
-        <li>112 KB &rarr; allocated in <strong>288 KB</strong> block (leaving 176 KB).</li>
-        <li>426 KB &rarr; <strong>CANNOT BE ALLOCATED!</strong> (Must wait, causing allocation failure!).</li>
-      </ul>
+        <!-- Start node -->
+        <rect x="20" y="95" width="120" height="50" rx="25" fill="#e0e7ff" stroke="#4338ca" stroke-width="2"/>
+        <text x="80" y="125" font-size="18" font-weight="bold" fill="#312e81" text-anchor="middle">Process Request (S)</text>
 
-      <div class="section-title" style="font-size:15px; margin-top:10px;">2. Best-Fit Allocation (Smallest hole big enough):</div>
-      <ul style="margin:4px 0 0 16px; line-height:1.6;">
-        <li>212 KB &rarr; allocated in <strong>300 KB</strong> block (leaving 88 KB).</li>
-        <li>417 KB &rarr; allocated in <strong>500 KB</strong> block (leaving 83 KB).</li>
-        <li>112 KB &rarr; allocated in <strong>200 KB</strong> block (leaving 88 KB).</li>
-        <li>426 KB &rarr; allocated in <strong>600 KB</strong> block (leaving 174 KB).</li>
-      </ul>
-      <div class="how-it-came" style="margin-top:8px;">
-        <strong>🎉 Best-Fit Result:</strong> All 4 processes allocated successfully with zero process rejections!
+        <path d="M 140 120 L 190 120" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow2)"/>
+
+        <!-- Strategy Decision Box -->
+        <polygon points="270,80 350,120 270,160 190,120" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+        <text x="270" y="125" font-size="17" font-weight="bold" fill="#92400e" text-anchor="middle">Strategy?</text>
+
+        <!-- First Fit branch -->
+        <path d="M 270 80 L 270 35 L 390 35" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow2)"/>
+        <rect x="390" y="15" width="160" height="42" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+        <text x="470" y="40" font-size="16" font-weight="bold" fill="#0369a1" text-anchor="middle">First-Fit: 1st hole &ge; S</text>
+
+        <!-- Best Fit branch -->
+        <path d="M 350 120 L 390 120" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow2)"/>
+        <rect x="390" y="100" width="160" height="42" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="470" y="125" font-size="16" font-weight="bold" fill="#15803d" text-anchor="middle">Best-Fit: min(hole - S &ge; 0)</text>
+
+        <!-- Worst Fit branch -->
+        <path d="M 270 160 L 270 205 L 390 205" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow2)"/>
+        <rect x="390" y="185" width="160" height="42" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+        <text x="470" y="210" font-size="16" font-weight="bold" fill="#b91c1c" text-anchor="middle">Worst-Fit: max(hole &ge; S)</text>
+
+        <!-- Arrow to outcome -->
+        <path d="M 550 35 L 610 95" stroke="#1e3a8a" stroke-width="2"/>
+        <path d="M 550 120 L 610 120" stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow2)"/>
+        <path d="M 550 205 L 610 145" stroke="#1e3a8a" stroke-width="2"/>
+
+        <rect x="610" y="95" width="135" height="50" rx="8" fill="#f3e8ff" stroke="#7e22ce" stroke-width="2"/>
+        <text x="677" y="118" font-size="16" font-weight="bold" fill="#581c87" text-anchor="middle">Allocate Block &amp;</text>
+        <text x="677" y="136" font-size="15" fill="#581c87" text-anchor="middle">Record Fragment</text>
+      </svg>
+      <p class="diagram-caption" style="text-align:center; font-family:'Caveat', cursive; font-size:16px; margin:4px 0 0 0; color:#555;">
+        <em>Fig 97.1: Flowchart representing heap allocation strategies: First-Fit, Best-Fit, and Worst-Fit decision paths.</em>
+      </p>
+    </div>
+
+    <h2 class="section-heading">2. Physical Memory Bar Visualization (Best-Fit Success)</h2>
+    <div style="background:#fff9e6; border:1px solid #d2b48c; border-radius:8px; padding:12px; margin:12px 0;">
+      <div style="font-family:'Caveat', cursive; font-size:18px; font-weight:bold; color:#854d0e; margin-bottom:8px;">
+        Physical Partition Layout &amp; Process Placement:
+      </div>
+      <!-- Memory bar representation -->
+      <div style="display:flex; height:50px; width:100%; border:2px solid #555; border-radius:6px; overflow:hidden; font-family:'Caveat', cursive; text-align:center;">
+        <div style="width:6%; background:#e2e8f0; border-right:1px solid #999; line-height:48px; font-size:13px;" title="100KB Free">100K</div>
+        <div style="width:29%; background:#bbf7d0; border-right:1px solid #999; line-height:22px; font-size:13px;">
+          P2 (417K)<br><span style="color:#059669; font-size:11px;">83K Free</span>
+        </div>
+        <div style="width:12%; background:#fed7aa; border-right:1px solid #999; line-height:22px; font-size:13px;">
+          P3 (112K)<br><span style="color:#ea580c; font-size:11px;">88K Free</span>
+        </div>
+        <div style="width:18%; background:#bae6fd; border-right:1px solid #999; line-height:22px; font-size:13px;">
+          P1 (212K)<br><span style="color:#0284c7; font-size:11px;">88K Free</span>
+        </div>
+        <div style="width:35%; background:#fbcfe8; line-height:22px; font-size:13px;">
+          P4 (426K)<br><span style="color:#db2777; font-size:11px;">174K Free</span>
+        </div>
+      </div>
+      <div style="font-family:'Caveat', cursive; font-size:14px; color:#666; margin-top:6px; text-align:center;">
+        Total Partitions: 1700 KB &bull; Total Allocated: 1167 KB &bull; Total Leftover Free Space: 533 KB (Scattered in 5 holes).
       </div>
     </div>
 
-    <h2 class="section-heading">2. Buddy System Allocation Solved Numerical</h2>
+    <h2 class="section-heading">3. Deep Numerical Comparison: First-Fit vs Best-Fit vs Worst-Fit</h2>
     <div class="example-box">
-      <strong>Problem:</strong> Using the Binary Buddy System with 1024 KB total initial memory, trace:
-      <ol style="margin:4px 0 0 18px; line-height:1.6;">
-        <li>Request A = 70 KB &rarr; 1024 splits into $512 	o 256 	o 128 	o$ allocates in <strong>128 KB</strong> block (Internal fragmentation = $128 - 70 = 58$ KB).</li>
-        <li>Request B = 240 KB &rarr; allocates in <strong>256 KB</strong> block.</li>
-        <li>Free A &rarr; 128 KB block freed; if neighbor buddy is free, immediately coalesced back to 256 KB.</li>
-      </ol>
+      <strong>Partitions:</strong> $H_1 = 100	ext{K},\; H_2 = 500	ext{K},\; H_3 = 200	ext{K},\; H_4 = 300	ext{K},\; H_5 = 600	ext{K}$<br>
+      <strong>Processes in Arrival Order:</strong> $P_1 = 212	ext{K},\; P_2 = 417	ext{K},\; P_3 = 112	ext{K},\; P_4 = 426	ext{K}$
+      
+      <div class="table-responsive" style="margin-top:10px;">
+        <table class="hand-table">
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th>P1 (212K) Block</th>
+              <th>P2 (417K) Block</th>
+              <th>P3 (112K) Block</th>
+              <th>P4 (426K) Block</th>
+              <th>Status &amp; Total External Frag</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>First-Fit</strong></td>
+              <td>$H_2$ (500K) &rarr; rem 288K</td>
+              <td>$H_5$ (600K) &rarr; rem 183K</td>
+              <td>$H_2$ rem (288K) &rarr; rem 176K</td>
+              <td><strong style="color:red;">FAILED!</strong> (No hole &ge; 426K)</td>
+              <td><strong>Failure.</strong> 747 KB free, but fragmented!</td>
+            </tr>
+            <tr>
+              <td><strong>Best-Fit</strong></td>
+              <td>$H_4$ (300K) &rarr; rem 88K</td>
+              <td>$H_2$ (500K) &rarr; rem 83K</td>
+              <td>$H_3$ (200K) &rarr; rem 88K</td>
+              <td>$H_5$ (600K) &rarr; rem 174K</td>
+              <td><strong style="color:green;">100% Success!</strong> Zero process wait.</td>
+            </tr>
+            <tr>
+              <td><strong>Worst-Fit</strong></td>
+              <td>$H_5$ (600K) &rarr; rem 388K</td>
+              <td>$H_2$ (500K) &rarr; rem 83K</td>
+              <td>$H_5$ rem (388K) &rarr; rem 276K</td>
+              <td><strong style="color:red;">FAILED!</strong> (Largest hole is 300K)</td>
+              <td><strong>Failure.</strong> Process 4 rejected.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h2 class="section-heading">4. Practice Exam Questions with Complete Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: Total Leftover Hole Memory in Best-Fit</span>
+        <span class="step-badge">GATE Numerical</span>
+      </div>
+      <p><strong>Question:</strong> In the Best-Fit trace above, calculate the total unallocated space across all partitions.</p>
+      <div class="code-snippet">
+Answer: 100K (unallocated H1) + 83K (H2 rem) + 88K (H3 rem) + 88K (H4 rem) + 174K (H5 rem) = 533 KB.
+      </div>
+    </div>
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Q2: Binary Buddy Coalescence Rule</span>
+        <span class="step-badge">University Exam</span>
+      </div>
+      <p><strong>Question:</strong> If block of size $2^k$ has base address $A$, what is the base address of its unique buddy block?</p>
+      <div class="code-snippet">
+Answer: Buddy Address = A XOR (2^k). (e.g. For address 0x0100 and size 256 bytes, buddy is 0x0100 XOR 0x0100 = 0x0000).
+      </div>
+    </div>
+    <div class="step-card s3">
+      <div class="step-header">
+        <span class="step-title">Q3: Which Strategy is Fastest?</span>
+        <span class="step-badge">Conceptual</span>
+      </div>
+      <p><strong>Question:</strong> Why is First-Fit generally faster in practice than Best-Fit?</p>
+      <div class="code-snippet">Answer: First-Fit halts search immediately upon finding the first sufficient block (O(1) to O(k)), whereas Best-Fit must exhaustively scan the entire free list (O(n)) to find the absolute minimum remainder.</div>
+    </div>
+  </div>
+
+
+  <!-- PAGE 98: LIVE VARIABLE ANALYSIS (BACKWARD SOLVER NUMERICAL) -->
+  <div class="page" data-topic="opt">
+    <div class="page-header">
+      <span class="subject-tag">🚀 Unit 4: Backward Data Flow Optimization</span>
+      <span class="exam-badge">🔥 14 Marks Solved Numerical</span>
+    </div>
+
+    <h1 class="title">Live Variable (Liveness) Analysis: Backward Solver Numerical &amp; Flowchart</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>🎯</span> Definition of Variable Liveness
+      </div>
+      <div class="a-content">
+        A variable $x$ is <strong>live</strong> at program point $p$ if there exists an execution path from $p$ along which the current value of $x$ is <strong>read / used before any redefinition</strong> (killing assignment).
+        Otherwise, $x$ is <strong>dead</strong>.
+        <ul style="margin:4px 0 0 16px; line-height:1.6;">
+          <li>Liveness flows <strong>backwards</strong> (from program exit towards entry).</li>
+          <li>Meet operator is <strong>Union ($igcup$)</strong> because $x$ is live if it is used along <em>at least one</em> future path (May-Analysis).</li>
+          <li><strong>Applications:</strong> Eliminates Dead Code (statements defining dead variables) and drives Register Allocation (constructing the Interference Graph).</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Backward Transfer Equations &amp; Liveness Sets</h2>
+    <div class="rules-card">
+      $$	ext{IN}[B] = 	ext{use}[B] \cup ig(	ext{OUT}[B] - 	ext{def}[B]ig)$$
+      $$	ext{OUT}[B] = igcup_{S \in 	ext{Succ}(B)} 	ext{IN}[S]$$
+      <ul style="margin:4px 0 0 16px; line-height:1.6;">
+        <li>$	ext{def}[B]$: Set of variables assigned values in $B$ before any use of that variable in $B$.</li>
+        <li>$	ext{use}[B]$: Set of variables used in $B$ before any assignment to that variable in $B$.</li>
+        <li>Boundary Condition: $	ext{IN}[	ext{Exit}] = \emptyset$; initial $	ext{IN}[B] = \emptyset$ for all $B$.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-heading">2. Authentic Visual Flowchart: Backward Data Flow Direction</h2>
+    <div class="hand-diagram-card" style="background:#fffdf9; border:2px dashed #d2b48c; padding:16px; border-radius:12px; margin:16px 0;">
+      <svg viewBox="0 0 760 220" style="width:100%; height:auto; font-family:'Caveat', cursive;">
+        <defs>
+          <marker id="arrowRed" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#dc2626"/>
+          </marker>
+        </defs>
+
+        <!-- Block 1 (Entry) -->
+        <rect x="290" y="10" width="180" height="45" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+        <text x="380" y="38" font-size="18" font-weight="bold" fill="#0369a1" text-anchor="middle">Block B1 (Entry)</text>
+
+        <!-- Backward red arrows going up -->
+        <path d="M 230 85 L 320 58" stroke="#dc2626" stroke-width="2" marker-end="url(#arrowRed)"/>
+        <path d="M 530 85 L 440 58" stroke="#dc2626" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+        <!-- Block 2 & Block 3 -->
+        <rect x="130" y="85" width="180" height="45" rx="6" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+        <text x="220" y="113" font-size="18" font-weight="bold" fill="#854d0e" text-anchor="middle">Block B2</text>
+
+        <rect x="450" y="85" width="180" height="45" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="540" y="113" font-size="18" font-weight="bold" fill="#15803d" text-anchor="middle">Block B3</text>
+
+        <!-- Backward red arrows from B4 up to B2 and B3 -->
+        <path d="M 340 160 L 250 133" stroke="#dc2626" stroke-width="2" marker-end="url(#arrowRed)"/>
+        <path d="M 420 160 L 510 133" stroke="#dc2626" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+        <!-- Block 4 (Exit) -->
+        <rect x="290" y="160" width="180" height="45" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+        <text x="380" y="188" font-size="18" font-weight="bold" fill="#b91c1c" text-anchor="middle">Block B4 (Exit)</text>
+
+        <text x="680" y="115" font-size="20" font-weight="bold" fill="#dc2626" text-anchor="middle">BACKWARD<br>FLOW &uarr;</text>
+      </svg>
+      <p class="diagram-caption" style="text-align:center; font-family:'Caveat', cursive; font-size:16px; margin:4px 0 0 0; color:#555;">
+        <em>Fig 98.1: Liveness analysis propagates information in the backward direction (from Exit up to Entry) via Union (&cup;).</em>
+      </p>
+    </div>
+
+    <h2 class="section-heading">3. University Solved Problem: Full Backward Iteration Trace</h2>
+    <div class="example-box">
+      <strong>Program CFG Statements:</strong>
+      <ul style="margin:4px 0 0 16px; line-height:1.5;">
+        <li>$B_1$: <code>i = 1; j = 1;</code> &rarr; $	ext{def} = \{i, j\},\; 	ext{use} = \emptyset$</li>
+        <li>$B_2$: <code>t1 = 10 * i;</code> &rarr; $	ext{def} = \{t_1\},\; 	ext{use} = \{i\}$</li>
+        <li>$B_3$: <code>t2 = j + t1;</code> &rarr; $	ext{def} = \{t_2\},\; 	ext{use} = \{j, t_1\}$</li>
+        <li>$B_4$: <code>j = j + 1; if j &lt; 10 goto B2;</code> &rarr; $	ext{def} = \{j\},\; 	ext{use} = \{j\}$</li>
+      </ul>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Iteration Table (Backward from B4 to B1):</div>
+      <div class="table-responsive">
+        <table class="hand-table">
+          <thead>
+            <tr>
+              <th>Iteration</th>
+              <th>Block</th>
+              <th>$	ext{OUT}[B] = igcup 	ext{IN}[	ext{Succ}]$</th>
+              <th>$	ext{IN}[B] = 	ext{use} \cup (	ext{OUT} - 	ext{def})$</th>
+              <th>Explanation of Live Variables</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Iter 1</strong></td>
+              <td>$B_4$<br>$B_3$<br>$B_2$<br>$B_1$</td>
+              <td>$	ext{IN}[B_2] \cup \emptyset$<br>$	ext{IN}[B_4] = \{j\}$<br>$	ext{IN}[B_3] = \{j, t_1\}$<br>$	ext{IN}[B_2] = \{i, j\}$</td>
+              <td>$\{j\} \cup (\emptyset - \{j\}) = \mathbf{\{j\}}$<br>$\{j, t_1\} \cup (\{j\} - \{t_2\}) = \mathbf{\{j, t_1\}}$<br>$\{i\} \cup (\{j, t_1\} - \{t_1\}) = \mathbf{\{i, j\}}$<br>$\emptyset \cup (\{i, j\} - \{i, j\}) = \mathbf{\emptyset}$</td>
+              <td>Variable $j$ needed for loop test.<br>$j$ and $t_1$ needed for addition.<br>$i$ used; $t_1$ generated.<br>$i$ and $j$ initialized here; none live before!</td>
+            </tr>
+            <tr>
+              <td><strong>Iter 2</strong></td>
+              <td>$B_4$<br>$B_3$<br>$B_2$<br>$B_1$</td>
+              <td>$	ext{IN}[B_2] = \{i, j\}$<br>$	ext{IN}[B_4] = \{i, j\}$<br>$	ext{IN}[B_3] = \{i, j, t_1\}$<br>$	ext{IN}[B_2] = \{i, j\}$</td>
+              <td>$\{j\} \cup (\{i, j\} - \{j\}) = \mathbf{\{i, j\}}$<br>$\{j, t_1\} \cup (\{i, j\} - \{t_2\}) = \mathbf{\{i, j, t_1\}}$<br>$\{i\} \cup (\{i, j, t_1\} - \{t_1\}) = \mathbf{\{i, j\}}$<br>$\emptyset \cup (\{i, j\} - \{i, j\}) = \mathbf{\emptyset}$</td>
+              <td>Loop transmits $i$ backward!<br>Fixed point reached!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h2 class="section-heading">4. Practice Exam Questions with Complete Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: Dead Code Elimination Condition</span>
+        <span class="step-badge">GATE Conceptual</span>
+      </div>
+      <p><strong>Question:</strong> When can an assignment <code>x = y + z</code> be safely eliminated as dead code?</p>
+      <div class="code-snippet">Answer: If variable 'x' is NOT in the OUT set of the statement (i.e. x is dead immediately after the assignment) AND the expression 'y + z' has no side effects (no division by zero, no function call).</div>
+    </div>
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Q2: Forward vs Backward Data Flow Summary</span>
+        <span class="step-badge">University Exam</span>
+      </div>
+      <p><strong>Question:</strong> Name 2 forward data flow analyses and 2 backward data flow analyses.</p>
+      <div class="code-snippet">
+&bull; Forward: 1. Available Expressions, 2. Reaching Definitions
+&bull; Backward: 1. Live Variable Analysis, 2. Very Busy Expressions (Anticipated Expressions)
+      </div>
     </div>
   </div>
 
