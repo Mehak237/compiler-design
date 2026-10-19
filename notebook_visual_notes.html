@@ -825,7 +825,7 @@
 
   <div class="topic-scroll" id="topic-menu">
     <button class="topic-btn active" data-topic="all" onclick="filterTopic('all')">
-      🌟 All Notes <span class="count-badge">86</span>
+      🌟 All Notes <span class="count-badge">92</span>
     </button>
     <button class="topic-btn" data-topic="phases" onclick="filterTopic('phases')">
       🏛️ Phases &amp; Architecture <span class="count-badge">5</span>
@@ -907,6 +907,12 @@
     </button>
     <button class="topic-btn" data-topic="procedures" onclick="filterTopic('procedures')">
       📦 Unit 3: Procedures &amp; Runtime <span class="count-badge">3</span>
+    </button>
+    <button class="topic-btn" data-topic="codegen" onclick="filterTopic('codegen')">
+      ⚙️ Unit 4: Code Generation <span class="count-badge">4</span>
+    </button>
+    <button class="topic-btn" data-topic="opt" onclick="filterTopic('opt')">
+      🚀 Unit 4: Code Optimization &amp; Runtime <span class="count-badge">2</span>
     </button>
   </div>
 </div>
@@ -13675,7 +13681,718 @@ Answer: 5 frames &times; 32 bytes = 160 bytes of stack memory.
 
 
 
+  
+
+  <!-- ==================== UNIT 4: CODE GENERATION ==================== -->
+  <!-- PAGE 87: ISSUES IN CODE GENERATION & TARGET MACHINE -->
+  <div class="page" data-topic="codegen">
+    <div class="page-header">
+      <span class="subject-tag">⚙️ Unit 4: Code Generation Foundations</span>
+      <span class="exam-badge">⭐ 10–12 Marks Compulsory Question</span>
+    </div>
+
+    <h1 class="title">Issues in Code Generation &amp; Target Machine Instruction Cost Model</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>🎯</span> Primary Objective of the Code Generator
+      </div>
+      <div class="a-content">
+        The <strong>Code Generator</strong> is the final phase of the compiler. It takes the optimized Intermediate Representation (IR, usually Three-Address Code or AST) and symbol table information as input and maps it into an equivalent, highly efficient target machine program (assembly or relocatable machine code).
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. The Five Critical Issues in Code Generator Design</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Design Issue</th>
+            <th>Primary Challenge</th>
+            <th>Compiler Engineering Solution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Input to Code Generator</strong></td>
+            <td>Input IR may contain type errors or unsimplified syntax trees.</td>
+            <td>Assumes front-end has performed complete type checking and semantic analysis. TAC / Quadruples are normalized into basic blocks.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Target Program Format</strong></td>
+            <td>Choosing between Absolute Machine Code, Relocatable Code, or Assembly.</td>
+            <td>Most modern compilers emit <strong>Assembly Language</strong> (e.g. x86, ARM, RISC-V) to delegate macro expansion, symbol relocation, and linking to external assemblers (GAS, LLVM MC).</td>
+          </tr>
+          <tr>
+            <td><strong>3. Instruction Selection</strong></td>
+            <td>Multiple assembly sequences can implement the same TAC statement with varying speed and code size.</td>
+            <td>Uses <strong>Tree Rewriting</strong> and dynamic programming instruction selection algorithms to pick minimal-cost instruction tiles.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Register Allocation &amp; Assignment</strong></td>
+            <td>Registers are the fastest storage in CPU, but strictly finite in quantity.</td>
+            <td>
+              &bull; <em>Allocation:</em> Decides which variables reside in registers at each point.<br>
+              &bull; <em>Assignment:</em> Assigns a specific hardware register (e.g., <code>R0, R1</code>) to each variable. Solved via <strong>Graph Coloring</strong>.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>5. Evaluation Order</strong></td>
+            <td>Order in which computations are scheduled affects the number of registers required.</td>
+            <td>Uses <strong>Sethi-Ullman Algorithm</strong> to evaluate subtrees requiring more registers first, minimizing memory spilling.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">2. Target Machine Architecture &amp; Instruction Cost Model</h2>
+    <p>We consider a standard register-memory machine with general-purpose registers $R_0, R_1, \dots, R_{k-1}$ and memory addressing modes:</p>
+    <div class="rules-card">
+      <ul style="margin:0; padding-left:18px; line-height:1.7;">
+        <li><strong>Cost Formula:</strong> $	ext{Cost} = 1 + \sum (	ext{additional cost of addressing modes})$.</li>
+        <li>Instruction word itself costs <strong>1</strong>.</li>
+        <li>Register operand (e.g. <code>R0</code>) costs <strong>0</strong> additional (inside CPU).</li>
+        <li>Memory word / Literal constant (e.g. <code>M</code>, <code>#100</code>, <code>c(R)</code>) costs <strong>1</strong> additional memory word fetch.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-heading">3. Solved Numerical: Instruction Cost Evaluation</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Calculate the cost of the following candidate target code sequences for the TAC statement <code>a = b + c</code>:
+      <table class="comparison-table" style="margin-top:8px;">
+        <thead>
+          <tr>
+            <th>Strategy</th>
+            <th>Assembly Instructions</th>
+            <th>Per-Instruction Cost Calculation</th>
+            <th>Total Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Plan A (Memory operands)</strong></td>
+            <td>
+              <code>LD R0, b</code><br>
+              <code>ADD R0, R0, c</code><br>
+              <code>ST a, R0</code>
+            </td>
+            <td>
+              Cost = $1 + 1$ (memory $b$) = 2<br>
+              Cost = $1 + 1$ (memory $c$) = 2<br>
+              Cost = $1 + 1$ (memory $a$) = 2
+            </td>
+            <td><strong>6 Words</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Plan B (Pre-loaded b in R0)</strong></td>
+            <td>
+              <code>ADD R0, R0, c</code><br>
+              <code>ST a, R0</code>
+            </td>
+            <td>
+              Cost = $1 + 1$ (memory $c$) = 2<br>
+              Cost = $1 + 1$ (memory $a$) = 2
+            </td>
+            <td><strong>4 Words</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Plan C (All in registers R0, R1)</strong></td>
+            <td>
+              <code>ADD R0, R0, R1</code>
+            </td>
+            <td>
+              Cost = $1 + 0$ (all registers) = 1
+            </td>
+            <td><strong>1 Word</strong> (Fastest!)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">4. Practice Exam Questions with Complete Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: Indexed Addressing Cost</span>
+        <span class="step-badge">GATE Numerical</span>
+      </div>
+      <p><strong>Question:</strong> What is the execution cost of <code>LD R1, 16(R2)</code>?</p>
+      <div class="code-snippet">Cost = 1 (op) + 1 (constant offset 16) + 0 (R1, R2) = 2 Words.</div>
+    </div>
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Q2: Register Spilling Definition</span>
+        <span class="step-badge">University Exam</span>
+      </div>
+      <p><strong>Question:</strong> What is register spilling and when is it triggered?</p>
+      <div class="code-snippet">Answer: When active variables exceed available hardware registers (k), excess variables are temporarily stored in stack memory (spilled) and reloaded when needed.</div>
+    </div>
   </div>
+
+
+  <!-- PAGE 88: BASIC BLOCKS & CONTROL FLOW GRAPHS -->
+  <div class="page" data-topic="codegen">
+    <div class="page-header">
+      <span class="subject-tag">⚙️ Unit 4: Control Flow Analysis</span>
+      <span class="exam-badge">🔥 14 Marks Guaranteed Question</span>
+    </div>
+
+    <h1 class="title">Basic Blocks, Leader Identification &amp; Control Flow Graphs (CFG)</h1>
+
+    <div class="qa-box" style="background:#fefce8; border-color:#eab308;">
+      <div class="q-title" style="color:#a16207;">
+        <span>🧱</span> What is a Basic Block?
+      </div>
+      <div class="a-content">
+        A <strong>Basic Block</strong> is a sequence of consecutive Three-Address Code statements in which:
+        <ol style="margin:6px 0 0 16px; line-height:1.6;">
+          <li>Flow of control enters <strong>strictly at the first instruction</strong> (no jump into the middle).</li>
+          <li>Flow of control leaves the block <strong>strictly at the last instruction</strong> (no jump out except at the end).</li>
+        </ol>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. The Three Golden Rules for Identifying Leaders</h2>
+    <div class="rules-card">
+      <ol style="margin:0; padding-left:18px; line-height:1.7;">
+        <li><strong>Rule 1:</strong> The <strong>first statement</strong> of the Three-Address Code is always a Leader.</li>
+        <li><strong>Rule 2:</strong> Any statement that is the <strong>target of a conditional or unconditional jump</strong> (<code>goto L</code>) is a Leader.</li>
+        <li><strong>Rule 3:</strong> Any statement that <strong>immediately follows a conditional or unconditional jump</strong> is a Leader.</li>
+      </ol>
+    </div>
+
+    <h2 class="section-heading">2. Authentic Visual Blueprint: Basic Blocks &amp; Control Flow Graph</h2>
+    <div class="hand-diagram-card">
+      <img src="cfg_basic_blocks_diagram_1792389065930.jpg" alt="Basic Blocks Leader Rules and Control Flow Graph Construction" style="max-width:100%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+      <p class="diagram-caption"><em>Fig 88.1: Identifying leaders via Rules 1, 2, 3, partitioning into Blocks B1..B4, and constructing directed CFG with loop back-edge.</em></p>
+    </div>
+
+    <h2 class="section-heading">3. University Solved Problem: Full CFG Construction</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Partition the following 3-Address Code into Basic Blocks and construct its Control Flow Graph (CFG):
+      <div class="code-snippet" style="margin-top:6px;">
+(1)  i = 1
+(2)  j = 1
+(3)  t1 = 10 * i
+(4)  t2 = t1 + j
+(5)  t3 = 8 * t2
+(6)  t4 = t3 - 88
+(7)  a[t4] = 0.0
+(8)  j = j + 1
+(9)  if j &lt;= 10 goto (3)
+(10) i = i + 1
+(11) if i &lt;= 10 goto (2)
+(12) i = 1
+(13) t5 = i - 1
+(14) t6 = 88 * t5
+(15) a[t6] = 1.0
+(16) i = i + 1
+(17) if i &lt;= 10 goto (13)
+      </div>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step 1: Identifying Leaders</div>
+      <ul style="margin:4px 0 0 16px; line-height:1.6;">
+        <li><strong>Instruction (1):</strong> Leader by <strong>Rule 1</strong> (First instruction).</li>
+        <li><strong>Instruction (2):</strong> Leader by <strong>Rule 2</strong> (Target of <code>goto (2)</code> at line 11).</li>
+        <li><strong>Instruction (3):</strong> Leader by <strong>Rule 2</strong> (Target of <code>goto (3)</code> at line 9).</li>
+        <li><strong>Instruction (10):</strong> Leader by <strong>Rule 3</strong> (Immediately follows jump at line 9).</li>
+        <li><strong>Instruction (12):</strong> Leader by <strong>Rule 3</strong> (Immediately follows jump at line 11).</li>
+        <li><strong>Instruction (13):</strong> Leader by <strong>Rule 2</strong> (Target of <code>goto (13)</code> at line 17).</li>
+      </ul>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step 2: Partitioning into Basic Blocks</div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Block Name</th>
+            <th>Instruction Range</th>
+            <th>Contents &amp; Jump Condition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Block $B_1$</strong></td>
+            <td>(1)</td>
+            <td><code>i = 1</code></td>
+          </tr>
+          <tr>
+            <td><strong>Block $B_2$</strong></td>
+            <td>(2)</td>
+            <td><code>j = 1</code></td>
+          </tr>
+          <tr>
+            <td><strong>Block $B_3$</strong></td>
+            <td>(3) &ndash; (9)</td>
+            <td>Inner loop body; ends with <code>if j &lt;= 10 goto (3)</code></td>
+          </tr>
+          <tr>
+            <td><strong>Block $B_4$</strong></td>
+            <td>(10) &ndash; (11)</td>
+            <td>Outer loop increment; ends with <code>if i &lt;= 10 goto (2)</code></td>
+          </tr>
+          <tr>
+            <td><strong>Block $B_5$</strong></td>
+            <td>(12)</td>
+            <td><code>i = 1</code></td>
+          </tr>
+          <tr>
+            <td><strong>Block $B_6$</strong></td>
+            <td>(13) &ndash; (17)</td>
+            <td>Diagonal initialization; ends with <code>if i &lt;= 10 goto (13)</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>Control Flow Graph Edges:</strong><br>
+        $B_1 	o B_2 	o B_3$<br>
+        $B_3 	o B_3$ (Loop edge on $j \le 10$) &nbsp;|&nbsp; $B_3 	o B_4$ (Fall-through)<br>
+        $B_4 	o B_2$ (Loop edge on $i \le 10$) &nbsp;|&nbsp; $B_4 	o B_5$ (Fall-through)<br>
+        $B_5 	o B_6$<br>
+        $B_6 	o B_6$ (Loop edge on $i \le 10$) &nbsp;|&nbsp; $B_6 	o 	ext{Exit}$
+      </div>
+    </div>
+
+    <h2 class="section-heading">4. Practice Exam Questions with Complete Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: Total Blocks Count</span>
+        <span class="step-badge">GATE Question</span>
+      </div>
+      <p><strong>Question:</strong> How many basic blocks are formed by: <code>x = 0; L1: if x &lt; 5 goto L2; goto L3; L2: x = x + 1; goto L1; L3: halt;</code>?</p>
+      <div class="code-snippet">Leaders: x=0 (1), if x&lt;5 (2), goto L3 (3), x=x+1 (4), halt (5) &rarr; Exactly 5 Basic Blocks.</div>
+    </div>
+  </div>
+
+
+  <!-- PAGE 89: SIMPLE CODE GENERATOR & GETREG ALGORITHM -->
+  <div class="page" data-topic="codegen">
+    <div class="page-header">
+      <span class="subject-tag">⚙️ Unit 4: Code Generation Algorithm</span>
+      <span class="exam-badge">⭐ 12–15 Marks Full Solved Trace</span>
+    </div>
+
+    <h1 class="title">A Simple Code Generator, Descriptors &amp; getreg() Algorithm</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>📋</span> Essential Data Structures: Register &amp; Address Descriptors
+      </div>
+      <div class="a-content">
+        To generate efficient machine instructions without redundant load and store operations, the code generator maintains two dynamic tracking structures:
+        <ul style="margin:6px 0 0 16px; line-height:1.6;">
+          <li><strong>Register Descriptor:</strong> Keeps track of what variables have their current values stored in each register. Example: <code>R0 contains {a, t1}</code>.</li>
+          <li><strong>Address Descriptor:</strong> Keeps track of the location(s) where the current value of each variable can be found (in memory, in register(s), or on stack). Example: <code>location(a) = {memory 'a', R0}</code>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. The getreg() Decision Procedure</h2>
+    <p>For a Three-Address Code instruction <code>x = y + z</code>, <code>getreg()</code> chooses a register $R$ to store the result $x$:</p>
+    <div class="rules-card">
+      <ol style="margin:0; padding-left:18px; line-height:1.7;">
+        <li>If $y$ is currently in register $R_y$, and $R_y$ holds no other variable, and $y$ is not live after this instruction &rarr; <strong>Reuse $R_y$ for $x$</strong>!</li>
+        <li>Else, if an empty register $R$ is available &rarr; <strong>Allocate empty register $R$</strong>.</li>
+        <li>Else, if an occupied register $R$ holds a variable whose value is also safely present in memory &rarr; <strong>Select $R$ without memory spill</strong>.</li>
+        <li>Else (Spill needed) &rarr; Choose an occupied register $R$, emit <code>ST v, R</code> to save its value to memory, update address descriptors, and return $R$.</li>
+      </ol>
+    </div>
+
+    <h2 class="section-heading">2. Complete Step-by-Step Solved Assembly Generation Trace</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Using two registers $R_0$ and $R_1$, generate target assembly code and trace Register and Address Descriptors for the following Basic Block:
+      <div class="code-snippet" style="margin-top:6px;">
+t1 = a - b
+t2 = a - c
+t3 = t1 + t2
+d = t3 + t2
+      </div>
+      <em>Assume all temporaries ($t_1, t_2, t_3$) die after their last use; $d$ is live on exit.</em>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step-by-Step Code Generation Trace:</div>
+      <div class="table-responsive">
+        <table class="hand-table">
+          <thead>
+            <tr>
+              <th>TAC Statement</th>
+              <th>Generated Assembly</th>
+              <th>Register Descriptor</th>
+              <th>Address Descriptor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>t1 = a - b</code></td>
+              <td>
+                <code>LD R0, a</code><br>
+                <code>SUB R0, R0, b</code>
+              </td>
+              <td><code>R0: {t1}</code><br><code>R1: empty</code></td>
+              <td><code>t1: {R0}</code><br><code>a: {a}</code><br><code>b: {b}</code></td>
+            </tr>
+            <tr>
+              <td><code>t2 = a - c</code></td>
+              <td>
+                <code>LD R1, a</code><br>
+                <code>SUB R1, R1, c</code>
+              </td>
+              <td><code>R0: {t1}</code><br><code>R1: {t2}</code></td>
+              <td><code>t1: {R0}</code><br><code>t2: {R1}</code><br><code>c: {c}</code></td>
+            </tr>
+            <tr>
+              <td><code>t3 = t1 + t2</code></td>
+              <td>
+                <code>ADD R0, R0, R1</code>
+              </td>
+              <td><code>R0: {t3}</code><br><code>R1: {t2}</code></td>
+              <td><code>t3: {R0}</code> (t1 died, R0 reused!)<br><code>t2: {R1}</code> (t2 remains alive)</td>
+            </tr>
+            <tr>
+              <td><code>d = t3 + t2</code></td>
+              <td>
+                <code>ADD R0, R0, R1</code><br>
+                <code>ST d, R0</code>
+              </td>
+              <td><code>R0: {d}</code><br><code>R1: empty</code></td>
+              <td><code>d: {d, R0}</code> (Stored to memory because d is live on exit)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>🎉 Final Emitted Assembly Sequence:</strong>
+        <div class="code-snippet">
+LD  R0, a
+SUB R0, R0, b
+LD  R1, a
+SUB R1, R1, c
+ADD R0, R0, R1
+ADD R0, R0, R1
+ST  d, R0
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PAGE 90: SETHI-ULLMAN ALGORITHM & GRAPH COLORING -->
+  <div class="page" data-topic="codegen">
+    <div class="page-header">
+      <span class="subject-tag">⚙️ Unit 4: Register Allocation</span>
+      <span class="exam-badge">⭐ 14 Marks Solved Numerical</span>
+    </div>
+
+    <h1 class="title">Sethi-Ullman Algorithm &amp; Graph Coloring Register Allocation</h1>
+
+    <div class="qa-box" style="background:#f0fdf4; border-color:#22c55e;">
+      <div class="q-title" style="color:#15803d;">
+        <span>🎯</span> Goal of Sethi-Ullman Algorithm (Tree Labeling)
+      </div>
+      <div class="a-content">
+        When evaluating expression trees, the <strong>Sethi-Ullman Algorithm</strong> assigns an integer label (<strong>Ershov Number</strong>) to each node representing the <em>exact minimum number of registers required</em> to evaluate that subtree without spilling into memory!
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. The Sethi-Ullman Labeling Rules</h2>
+    <div class="rules-card">
+      <ol style="margin:0; padding-left:18px; line-height:1.7;">
+        <li><strong>Leaf Node:</strong>
+          <ul>
+            <li>If leaf is leftmost child &rarr; Label = <strong>1</strong></li>
+            <li>If leaf is right child &rarr; Label = <strong>0</strong> (or 1 in uniform register machines)</li>
+          </ul>
+        </li>
+        <li><strong>Internal Operator Node with children having labels $L_1$ and $L_2$:</strong>
+          $$	ext{Label}(N) = egin{cases} \max(L_1, L_2) & 	ext{if } L_1 
+eq L_2 \ L_1 + 1 & 	ext{if } L_1 = L_2 \end{cases}$$
+        </li>
+        <li><strong>Evaluation Order Rule:</strong> Always evaluate the child requiring <strong>more registers first</strong>!</li>
+      </ol>
+    </div>
+
+    <h2 class="section-heading">2. Authentic Visual Blueprint: Tree Labelling &amp; Assembly Emission</h2>
+    <div class="hand-diagram-card">
+      <img src="sethi_ullman_diagram_1792389094126.jpg" alt="Sethi-Ullman Tree Labeling and Minimal Register Assembly Code" style="max-width:100%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+      <p class="diagram-caption"><em>Fig 90.1: Computing Ershov numbers on syntax tree for (a - b) + (c + d) * (e - f) and emitting 8-instruction optimal assembly.</em></p>
+    </div>
+
+    <h2 class="section-heading">3. Solved Numerical: Ershov Numbers &amp; Optimal Assembly</h2>
+    <div class="example-box">
+      <strong>Expression:</strong> $T = (a - b) + (c + d) 	imes (e - f)$
+      <ul style="margin:6px 0 0 16px; line-height:1.6;">
+        <li>Left subtree $(a - b)$: Left child $a$ (1), Right child $b$ (1) &rarr; Operator <code>-</code> label = $\max(1, 1) + 1 = \mathbf{2}$.</li>
+        <li>Subtree $(c + d)$: Left child $c$ (1), Right child $d$ (1) &rarr; Operator <code>+</code> label = $\max(1, 1) + 1 = \mathbf{2}$.</li>
+        <li>Subtree $(e - f)$: Left child $e$ (1), Right child $f$ (1) &rarr; Operator <code>-</code> label = $\max(1, 1) + 1 = \mathbf{2}$.</li>
+        <li>Node $(c + d) 	imes (e - f)$: Children both have label 2 &rarr; Operator <code>*</code> label = $2 + 1 = \mathbf{3}$.</li>
+        <li>Root Node <code>+</code>: Left child has label 2, Right child has label 3 &rarr; Label = $\max(2, 3) = \mathbf{3}$!</li>
+      </ul>
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>Total Registers Needed:</strong> <strong>3 Registers ($R_1, R_2, R_3$)</strong>.<br>
+        <strong>Evaluation Order:</strong> Evaluate heavier right subtree $(c + d) 	imes (e - f)$ first, then left $(a - b)$, then root!
+      </div>
+    </div>
+
+    <h2 class="section-heading">4. Register Allocation via Graph Coloring (Chaitin's Heuristic)</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>Algorithm Phase</th>
+            <th>Compiler Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>Liveness Analysis</strong></td>
+            <td>Determine live ranges for all variables across CFG.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Interference Graph Construction</strong></td>
+            <td>Nodes = variables. An undirected edge exists between two nodes if both variables are live simultaneously.</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Simplify (Kempe's Heuristic)</strong></td>
+            <td>Find a node $v$ with degree $&lt; K$ (where $K$ = number of hardware registers). Push $v$ onto stack and remove from graph.</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>Select / Color</strong></td>
+            <td>Pop nodes from stack one by one, assigning a color (register) not used by any adjacent neighbor.</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><strong>Spill Handling</strong></td>
+            <td>If all remaining nodes have degree $\ge K$, pick a variable to spill into memory, remove it, and restart.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ==================== UNIT 4: CODE OPTIMIZATION ==================== -->
+  <!-- PAGE 91: MACHINE-INDEPENDENT OPTIMIZATIONS -->
+  <div class="page" data-topic="opt">
+    <div class="page-header">
+      <span class="subject-tag">🚀 Unit 4: Machine-Independent Optimization</span>
+      <span class="exam-badge">⭐ 14 Marks Guaranteed Question</span>
+    </div>
+
+    <h1 class="title">Machine-Independent Code Optimization Techniques</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>🎯</span> The Three Golden Rules of Code Optimization
+      </div>
+      <div class="a-content">
+        <ol style="margin:4px 0 0 16px; line-height:1.6;">
+          <li><strong>Preserve Meaning (Correctness):</strong> An optimization must <em>never change the computed output</em> under any input condition.</li>
+          <li><strong>Speedup / Footprint Gain:</strong> Must measurably reduce execution time, CPU cycles, or memory consumption.</li>
+          <li><strong>Worth the Compilation Effort:</strong> The compile-time cost must not outweigh the runtime performance benefit.</li>
+        </ol>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Primary Machine-Independent Optimizations</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Optimization Technique</th>
+            <th>Original Unoptimized Code</th>
+            <th>Transformed Optimized Code</th>
+            <th>Performance Benefit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Constant Folding</strong></td>
+            <td><code>x = 3.14159 * 2.0;</code></td>
+            <td><code>x = 6.28318;</code></td>
+            <td>Evaluates constant expressions at compile-time instead of runtime.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Constant Propagation</strong></td>
+            <td><code>pi = 3.14;<br>area = pi * r * r;</code></td>
+            <td><code>area = 3.14 * r * r;</code></td>
+            <td>Replaces variable occurrences with known constant value.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Common Subexpression Elimination (CSE)</strong></td>
+            <td><code>t1 = 4 * i;<br>t2 = a[t1];<br>t3 = 4 * i;<br>t4 = b[t3];</code></td>
+            <td><code>t1 = 4 * i;<br>t2 = a[t1];<br>t4 = b[t1];</code></td>
+            <td>Avoids recomputing already evaluated expression <code>4 * i</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Copy Propagation</strong></td>
+            <td><code>x = y;<br>z = x + 5;</code></td>
+            <td><code>z = y + 5;</code></td>
+            <td>Propagates <code>y</code> directly, enabling elimination of temporary assignment <code>x = y</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Dead Code Elimination</strong></td>
+            <td><code>debug = 0;<br>if (debug) print(x);</code></td>
+            <td><code>// completely removed</code></td>
+            <td>Removes unreachable code or values that are never read.</td>
+          </tr>
+          <tr>
+            <td><strong>6. Loop Invariant Code Motion (Hoisting)</strong></td>
+            <td><code>while (i &lt; n) {<br>&nbsp;&nbsp;x = y + z;<br>&nbsp;&nbsp;a[i] = x * i;<br>}</code></td>
+            <td><code>x = y + z; // Pre-header<br>while (i &lt; n) {<br>&nbsp;&nbsp;a[i] = x * i;<br>}</code></td>
+            <td>Moves computations that yield the exact same value across all iterations out of the loop body!</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">2. Loop Optimization: Induction Variables &amp; Strength Reduction</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Apply Induction Variable Elimination and Strength Reduction to optimize the loop:
+      <div class="code-snippet" style="margin-top:6px;">
+B2: i = i + 1
+    t1 = 4 * i       // Expensive multiplication inside loop!
+    t2 = a[t1]
+    if t2 &lt; 100 goto B2
+      </div>
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step-by-Step Strength Reduction:</div>
+      <p>Here, $i$ is a basic induction variable (increments by 1). $t_1 = 4 	imes i$ is in the family of $i$ with multiplier 4. We can replace the multiplication with a cheap addition!</p>
+      <div class="code-snippet">
+// In Pre-header:
+t1 = 4 * i
+
+// In Loop Body B2:
+B2: i = i + 1
+    t1 = t1 + 4      // Multiplication replaced with fast addition!
+    t2 = a[t1]
+    if t2 &lt; 100 goto B2
+      </div>
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>Performance Win:</strong> Addition takes 1 CPU cycle vs 3–5 cycles for integer multiplication!
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PAGE 92: PEEPHOLE OPTIMIZATION & ADVANCED RUNTIME STORAGE -->
+  <div class="page" data-topic="opt">
+    <div class="page-header">
+      <span class="subject-tag">🚀 Unit 4: Target Optimization &amp; Storage</span>
+      <span class="exam-badge">⭐ 12–14 Marks Core Topic</span>
+    </div>
+
+    <h1 class="title">Machine-Dependent Peephole Optimization &amp; Heap Storage Management</h1>
+
+    <div class="qa-box" style="background:#fefce8; border-color:#eab308;">
+      <div class="q-title" style="color:#a16207;">
+        <span>🔍</span> What is Peephole Optimization?
+      </div>
+      <div class="a-content">
+        <strong>Peephole Optimization</strong> is a machine-dependent local optimization technique that slides a small window (the "peephole", typically 2 to 4 instructions) over the target assembly code, replacing inefficient instruction sequences with faster or shorter equivalents.
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Five Classic Peephole Optimization Techniques</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Technique</th>
+            <th>Original Assembly Sequence</th>
+            <th>Optimized Assembly Replacement</th>
+            <th>Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Eliminating Redundant Loads/Stores</strong></td>
+            <td><code>MOV R0, a<br>MOV a, R0</code></td>
+            <td><code>MOV R0, a</code></td>
+            <td>Second instruction is redundant since <code>a</code> already has the value of <code>R0</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Eliminating Unreachable Code</strong></td>
+            <td><code>JMP L2<br>ADD R0, R1, R2<br>L2: ...</code></td>
+            <td><code>JMP L2<br>L2: ...</code></td>
+            <td>Instruction immediately following unconditional jump without label can never execute.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Flow-of-Control Jump Chaining</strong></td>
+            <td><code>goto L1<br>...<br>L1: goto L2</code></td>
+            <td><code>goto L2<br>...<br>L1: goto L2</code></td>
+            <td>Eliminates intermediate jump hopping directly to final destination.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Algebraic Simplification &amp; Strength Reduction</strong></td>
+            <td><code>x = x + 0<br>x = x * 1<br>x = x * 2</code></td>
+            <td><code>// eliminated<br>// eliminated<br>x = x &lt;&lt; 1 (or ADD x, x)</code></td>
+            <td>Replaces identity operations and substitutes shift for multiplication.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Use of Machine Idioms</strong></td>
+            <td><code>ADD R0, R0, #1</code></td>
+            <td><code>INC R0</code></td>
+            <td>Hardware architectures have dedicated single-cycle instructions like <code>INC</code> or autoincrement addressing.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">2. Advanced Runtime Storage Management: Heap Allocation Strategies</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Heap Allocation Strategy</th>
+            <th>How It Works</th>
+            <th>Pros &amp; Best Use Case</th>
+            <th>Cons &amp; Fragmentation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>First Fit</strong></td>
+            <td>Scans free list from beginning, allocates the <em>very first</em> block large enough.</td>
+            <td>Fastest allocation time; minimal search overhead.</td>
+            <td>Leaves small unusable fragments at the start of the list (external fragmentation).</td>
+          </tr>
+          <tr>
+            <td><strong>Best Fit</strong></td>
+            <td>Scans the entire free list, allocates the block whose size is <em>closest</em> to requested size.</td>
+            <td>Minimizes wasted memory in the allocated block.</td>
+            <td>Slower (must scan whole list); creates tiny leftover slivers of memory.</td>
+          </tr>
+          <tr>
+            <td><strong>Buddy System</strong></td>
+            <td>Partitions memory into blocks of power-of-two sizes ($2^k$). Merges adjacent buddy blocks on free.</td>
+            <td>Extremely fast coalescence (merging) of free adjacent blocks.</td>
+            <td>High internal fragmentation (e.g. 65KB request takes 128KB block).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">3. Automatic Garbage Collection Strategies Compared</h2>
+    <div class="key-points-grid">
+      <div class="key-point-card">
+        <strong>Reference Counting</strong><br>
+        &bull; Each heap object stores a counter of active references.<br>
+        &bull; Incremented on assignment; decremented on drop. When counter = 0, memory is immediately reclaimed.<br>
+        &bull; <em>Limitation:</em> Cannot reclaim <strong>circular references</strong> ($A 	o B 	o A$).
+      </div>
+      <div class="key-point-card">
+        <strong>Mark &amp; Sweep Collector</strong><br>
+        &bull; <strong>Phase 1 (Mark):</strong> Starts from Root Set (registers, stack, globals) and traverses reachable pointers, setting a mark bit.<br>
+        &bull; <strong>Phase 2 (Sweep):</strong> Scans entire heap; reclaims all unmarked blocks to free list.<br>
+        &bull; <em>Advantage:</em> Naturally handles circular references!
+      </div>
+    </div>
+  </div>
+
+
+</div>
 
   <script>
 let currentActiveTopic = null;
