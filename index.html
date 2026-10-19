@@ -825,7 +825,7 @@
 
   <div class="topic-scroll" id="topic-menu">
     <button class="topic-btn active" data-topic="all" onclick="filterTopic('all')">
-      🌟 All Notes <span class="count-badge">79</span>
+      🌟 All Notes <span class="count-badge">82</span>
     </button>
     <button class="topic-btn" data-topic="phases" onclick="filterTopic('phases')">
       🏛️ Phases &amp; Architecture <span class="count-badge">5</span>
@@ -901,6 +901,12 @@
     </button>
     <button class="topic-btn" data-topic="backpatch" onclick="filterTopic('backpatch')">
       ⚡ Unit 3: Control Flow &amp; Backpatching <span class="count-badge">2</span>
+    </button>
+    <button class="topic-btn" data-topic="symbol-table" onclick="filterTopic('symbol-table')">
+      🗂️ Unit 3: Symbol Table <span class="count-badge">1</span>
+    </button>
+    <button class="topic-btn" data-topic="procedures" onclick="filterTopic('procedures')">
+      📦 Unit 3: Procedures &amp; Runtime <span class="count-badge">2</span>
     </button>
   </div>
 </div>
@@ -12715,6 +12721,406 @@ p1 = v1;  // VALID! Both have identical internal structure { int, int }!
       </div>
     </div>
   </div>
+
+
+  <!-- PAGE 79: SYMBOL TABLE MANAGEMENT & SCOPED TABLES -->
+  <div class="page" data-topic="symbol-table">
+    <div class="page-header">
+      <span class="subject-tag">🗂️ Unit 3: Symbol Table Management</span>
+      <span class="exam-badge">⭐ 10–12 Marks Compulsory Question</span>
+    </div>
+
+    <h1 class="title">Symbol Table Organization, Operations &amp; Scoped Hierarchy</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>💡</span> What is a Symbol Table and Why is it Fundamental?
+      </div>
+      <div class="a-content">
+        A <strong>Symbol Table</strong> is a high-performance database created and maintained by the compiler to track all attributes associated with source identifiers (variables, functions, arrays, structs, labels).
+        It is accessed and enriched across <em>every single phase</em>:
+        <ul style="margin: 6px 0 0 18px; line-height:1.6;">
+          <li><strong>Lexical Analyzer:</strong> Creates new symbol entries via <code>insert()</code> upon encountering identifier tokens.</li>
+          <li><strong>Syntax &amp; Semantic Analyzer:</strong> Inspects types, array dimensions, function signatures, and verifies identifier declaration before usage using <code>lookup()</code>.</li>
+          <li><strong>Intermediate Code Generator:</strong> Resolves memory offsets, base addresses, and parameter locations.</li>
+          <li><strong>Code Optimizer &amp; Target Generator:</strong> Uses symbol table data for register assignment, stack allocation, and emitting assembly labels.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Symbol Table Data Structures: Comprehensive Trade-off Analysis</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Data Structure</th>
+            <th>Insert Time</th>
+            <th>Lookup Time</th>
+            <th>Memory Overhead</th>
+            <th>Compiler Suitability &amp; Real-World Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Linear List / Unordered Array</strong></td>
+            <td>$O(1)$</td>
+            <td>$O(n)$</td>
+            <td>Extremely Low</td>
+            <td>Only suitable for tiny toy languages (&lt; 25 identifiers). Catastrophic slowdown for large compilation units.</td>
+          </tr>
+          <tr>
+            <td><strong>Ordered / Sorted Array</strong></td>
+            <td>$O(n)$</td>
+            <td>$O(\log n)$</td>
+            <td>Low</td>
+            <td>Binary search speeds up lookup, but insertion requires shifting elements. Impractical for dynamic single-pass compilers.</td>
+          </tr>
+          <tr>
+            <td><strong>Binary Search Tree (BST)</strong></td>
+            <td>$O(\log n)$ avg, $O(n)$ worst</td>
+            <td>$O(\log n)$ avg, $O(n)$ worst</td>
+            <td>Moderate (2 child pointers per node)</td>
+            <td>Performs well if identifiers are entered in random order. Degenerates into a linear list without self-balancing (AVL / Red-Black).</td>
+          </tr>
+          <tr>
+            <td><strong>Hash Table with Separate Chaining</strong></td>
+            <td><strong>$O(1)$ ideal</strong></td>
+            <td><strong>$O(1)$ ideal</strong></td>
+            <td>Moderate / High (buckets + linked nodes)</td>
+            <td><strong>The Golden Standard in Production Compilers</strong> (GCC, Clang, Rustc). Provides near-instantaneous symbol retrieval.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">2. Authentic Visual Blueprint: Hash Table &amp; Scoped Tree</h2>
+    <div class="hand-diagram-card">
+      <img src="symbol_table_scope_diagram_1792387996970.jpg" alt="Symbol Table Data Structure &amp; Scoped Hierarchy Diagram" style="max-width:100%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+      <p class="diagram-caption"><em>Fig 79.1: Hash Table bucket chaining structure &amp; nested lexical scoping tree with parent pointer chains.</em></p>
+    </div>
+
+    <h2 class="section-heading">3. Block-Structured (Nested) Scopes &amp; Parent Pointer Traversal</h2>
+    <p>Modern languages support <strong>Lexical Scoping</strong>, meaning inner code blocks can introduce variables that <em>shadow</em> identical names from enclosing blocks.</p>
+
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Mechanism 1: Scope Stack &amp; Parent Pointers</span>
+        <span class="step-badge">Lexical Scoping</span>
+      </div>
+      <p>Each scope maintains a dedicated table. When entering a block (<code>{</code>), a new scope table is created with a <code>parent_pointer</code> pointing to the enclosing scope table. When exiting (<code>}</code>), the scope is closed.</p>
+    </div>
+
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Mechanism 2: Lookup Strategy (Inner &rarr; Outer)</span>
+        <span class="step-badge">Shadowing Resolution</span>
+      </div>
+      <p>When searching for identifier <code>x</code>, the compiler searches the current innermost table. If found, it returns that definition (shadowing outer definitions). If not found, it follows the <code>parent_pointer</code> upwards recursively until reaching Global Scope. If not found in Global Scope &rarr; <strong>Compilation Error: Undeclared Variable</strong>.</p>
+    </div>
+
+    <div class="golden-box" style="margin-top:14px;">
+      <strong>📝 Solved Trace Example:</strong>
+      <div class="code-snippet" style="margin-top:6px;">
+int x = 10, y = 20;     // Scope 0 (Global)
+void foo() {
+    float x = 3.14;     // Scope 1 (foo Function Scope)
+    {
+        int z = 99;     // Scope 2 (Inner Block)
+        print(x, y, z); // &lt;-- Which variables are accessed?
+    }
+}
+      </div>
+      <ul style="margin:6px 0 0 16px; line-height:1.5;">
+        <li><code>x</code> resolves to <strong>Scope 1 (Local float x = 3.14)</strong> &rarr; Shadows Global <code>x</code>!</li>
+        <li><code>y</code> is missing in Scope 2 and 1 &rarr; Follows parent link to <strong>Scope 0 (Global int y = 20)</strong>.</li>
+        <li><code>z</code> is found directly in <strong>Scope 2 (Local int z = 99)</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 80: RUN-TIME STORAGE & ACTIVATION RECORDS -->
+  <div class="page" data-topic="procedures">
+    <div class="page-header">
+      <span class="subject-tag">📦 Unit 3: Run-Time Environments</span>
+      <span class="exam-badge">⭐ 10–12 Marks Exam Favorite</span>
+    </div>
+
+    <h1 class="title">Run-Time Storage Organization &amp; Activation Records (Stack Frames)</h1>
+
+    <div class="qa-box" style="background:#fefce8; border-color:#eab308;">
+      <div class="q-title" style="color:#a16207;">
+        <span>🧠</span> Runtime Address Space Division
+      </div>
+      <div class="a-content">
+        When the compiled program executes, memory is partitioned into 4 distinct logical regions:
+        <ol style="margin:6px 0 0 16px; line-height:1.6;">
+          <li><strong>Code (Text Segment):</strong> Fixed, read-only executable instructions.</li>
+          <li><strong>Static / Global Data:</strong> Compile-time known static and global variables.</li>
+          <li><strong>Call Stack (Grows Downward &darr;):</strong> Manages procedure activations, local variables, parameters, and recursive calls via LIFO stack frames.</li>
+          <li><strong>Heap (Grows Upward &uarr;):</strong> Manages dynamic memory requests (<code>malloc</code>, <code>free</code>, <code>new</code>, garbage collected objects).</li>
+        </ol>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Detailed Anatomy of an Activation Record (Stack Frame)</h2>
+    <p>Each function call pushes an <strong>Activation Record (AR)</strong> onto the runtime call stack. Its layout is standardized as follows:</p>
+
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Location in Frame</th>
+            <th>Exact Purpose &amp; Compiler Function</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Temporaries</strong></td>
+            <td>Top of Frame</td>
+            <td>Holds intermediate values computed during complex expression evaluations (e.g., $t_1, t_2$).</td>
+          </tr>
+          <tr>
+            <td><strong>Local Variables</strong></td>
+            <td>Upper Middle</td>
+            <td>Holds variables declared local to the current function scope.</td>
+          </tr>
+          <tr>
+            <td><strong>Saved Machine Status</strong></td>
+            <td>Middle</td>
+            <td>Saves caller's Program Counter (PC / return address), CPU registers, and status flags.</td>
+          </tr>
+          <tr>
+            <td><strong>Access Link (Static Link)</strong></td>
+            <td>Middle</td>
+            <td>Points to the AR of the <em>lexically enclosing</em> procedure (resolves non-local variables in nested languages like Pascal).</td>
+          </tr>
+          <tr>
+            <td><strong>Control Link (Dynamic Link)</strong></td>
+            <td>Middle</td>
+            <td>Points to the AR of the <em>immediate caller</em> (restores caller's base frame pointer <code>EBP/RBP</code> on return).</td>
+          </tr>
+          <tr>
+            <td><strong>Actual Parameters</strong></td>
+            <td>Lower Middle</td>
+            <td>Holds arguments pushed by the caller prior to function invocation.</td>
+          </tr>
+          <tr>
+            <td><strong>Returned Value</strong></td>
+            <td>Bottom of Frame</td>
+            <td>Reserved slot for the callee's computed return value (often passed via register <code>EAX/RAX</code>).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">2. Parameter Passing Techniques: Complete Comparison Table</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Mechanism</th>
+            <th>Passing Method</th>
+            <th>Can Callee Mutate Caller's Variable?</th>
+            <th>Languages &amp; Core Nuance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Call by Value</strong></td>
+            <td>Evaluates actual argument and copies its <strong>r-value</strong> (data value).</td>
+            <td><strong>No.</strong> Callee operates on a private copy.</td>
+            <td>C, Java (primitives), C++ default. Safe, zero unintended side effects.</td>
+          </tr>
+          <tr>
+            <td><strong>Call by Reference</strong></td>
+            <td>Passes the <strong>l-value</strong> (memory address) of the actual argument.</td>
+            <td><strong>Yes.</strong> Formal parameter acts as an alias to caller's original variable.</td>
+            <td>C++ (<code>int &amp;x</code>), Pascal (<code>var</code>). Fast for large structs/objects; modifies caller directly.</td>
+          </tr>
+          <tr>
+            <td><strong>Call by Copy-Restore (Value-Result)</strong></td>
+            <td>Values copied in at call; final values copied back to caller variables at return.</td>
+            <td><strong>Yes, at return time.</strong></td>
+            <td>Ada (<code>in out</code> parameters), Fortran. Behaves like reference unless exceptions or aliasing occur.</td>
+          </tr>
+          <tr>
+            <td><strong>Call by Name</strong></td>
+            <td>Argument is passed unevaluated as an expression using compiler-generated <strong>Thunks</strong>.</td>
+            <td><strong>Yes, evaluated each time referenced.</strong></td>
+            <td>Algol 60 (historical). Forms foundation of Lazy Evaluation in functional languages like Haskell.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+
+  <!-- PAGE 81: INTERMEDIATE CODE FOR PROCEDURES -->
+  <div class="page" data-topic="procedures">
+    <div class="page-header">
+      <span class="subject-tag">⚡ Unit 3: Procedure Code Generation</span>
+      <span class="exam-badge">🔥 14 Marks Solved Numerical</span>
+    </div>
+
+    <h1 class="title">Intermediate Code Generation for Procedures &amp; Complete Solved Trace</h1>
+
+    <div class="qa-box" style="background:#f0fdf4; border-color:#22c55e;">
+      <div class="q-title" style="color:#15803d;">
+        <span>📝</span> Three-Address Code (TAC) Instructions for Function Calls
+      </div>
+      <div class="a-content">
+        In Three-Address Code, procedure calling sequences rely on 4 primitive statements:
+        <ul style="margin:6px 0 0 18px; line-height:1.7;">
+          <li><code>param x</code> &rarr; Pushes actual argument <code>x</code> for the upcoming call.</li>
+          <li><code>call p, n</code> &rarr; Invokes procedure <code>p</code> having <code>n</code> actual parameters.</li>
+          <li><code>return y</code> &rarr; Returns value <code>y</code> from callee back to caller.</li>
+          <li><code>t = call p, n</code> &rarr; Invokes function <code>p</code> and captures returned result in temporary <code>t</code>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Authentic Visual Blueprint: Activation Record &amp; Procedure TAC</h2>
+    <div class="hand-diagram-card">
+      <img src="procedure_activation_record_1792388020440.jpg" alt="Activation Record Layout and Procedure TAC Generation" style="max-width:100%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+      <p class="diagram-caption"><em>Fig 81.1: Stack frame allocation, parameter pushing sequence, and callee-caller return handshake.</em></p>
+    </div>
+
+    <h2 class="section-heading">2. University Solved Numerical: Complete TAC Generation</h2>
+    <div class="example-box">
+      <strong>Problem Statement:</strong> Generate Three-Address Code (TAC) and show the exact calling sequence for the following program:
+      <div class="code-snippet" style="margin-top:6px;">
+int max(int a, int b) {
+    if (a &gt; b)
+        return a;
+    else
+        return b;
+}
+
+void main() {
+    int x = 10, y = 20, z;
+    z = max(x, y);
+}
+      </div>
+
+      <h3 style="font-family:'Caveat', cursive; font-size:22px; color:#1e3a8a; margin:14px 0 6px 0;">Part A: Generated TAC for Callee <code>max(a, b)</code></h3>
+      <div class="table-responsive">
+        <table class="hand-table">
+          <thead>
+            <tr>
+              <th>Quad #</th>
+              <th>Three-Address Code (TAC)</th>
+              <th>Detailed Explanation &amp; Stack Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>(1)</td>
+              <td><code>proc begin max</code></td>
+              <td>Prologue: Callee establishes new activation record on stack.</td>
+            </tr>
+            <tr>
+              <td>(2)</td>
+              <td><code>if a &gt; b goto (5)</code></td>
+              <td>Evaluates relational condition between formal parameters $a$ and $b$.</td>
+            </tr>
+            <tr>
+              <td>(3)</td>
+              <td><code>return b</code></td>
+              <td>Else branch: stores value of $b$ into return value slot.</td>
+            </tr>
+            <tr>
+              <td>(4)</td>
+              <td><code>goto (6)</code></td>
+              <td>Unconditional jump over the true branch to procedure epilogue.</td>
+            </tr>
+            <tr>
+              <td>(5)</td>
+              <td><code>return a</code></td>
+              <td>True branch: stores value of $a$ into return value slot.</td>
+            </tr>
+            <tr>
+              <td>(6)</td>
+              <td><code>proc end max</code></td>
+              <td>Epilogue: deallocates stack frame, restores caller status, returns control.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="font-family:'Caveat', cursive; font-size:22px; color:#1e3a8a; margin:16px 0 6px 0;">Part B: Generated TAC for Caller <code>main()</code></h3>
+      <div class="table-responsive">
+        <table class="hand-table">
+          <thead>
+            <tr>
+              <th>Quad #</th>
+              <th>Three-Address Code (TAC)</th>
+              <th>Calling Sequence Protocol</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>(7)</td>
+              <td><code>proc begin main</code></td>
+              <td>Main procedure prologue: sets up stack frame for <code>main</code>.</td>
+            </tr>
+            <tr>
+              <td>(8)</td>
+              <td><code>x = 10</code></td>
+              <td>Initializes local variable <code>x</code> at local frame offset.</td>
+            </tr>
+            <tr>
+              <td>(9)</td>
+              <td><code>y = 20</code></td>
+              <td>Initializes local variable <code>y</code> at local frame offset.</td>
+            </tr>
+            <tr>
+              <td>(10)</td>
+              <td><code>param x</code></td>
+              <td>Caller pushes 1st actual argument (value 10) onto argument stack.</td>
+            </tr>
+            <tr>
+              <td>(11)</td>
+              <td><code>param y</code></td>
+              <td>Caller pushes 2nd actual argument (value 20) onto argument stack.</td>
+            </tr>
+            <tr>
+              <td>(12)</td>
+              <td><code>t1 = call max, 2</code></td>
+              <td>Caller invokes <code>max</code> with 2 parameters; captures return value into $t_1$.</td>
+            </tr>
+            <tr>
+              <td>(13)</td>
+              <td><code>z = t1</code></td>
+              <td>Assigns returned result from temporary $t_1$ into variable <code>z</code>.</td>
+            </tr>
+            <tr>
+              <td>(14)</td>
+              <td><code>proc end main</code></td>
+              <td>Main procedure terminates; stack frame popped.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="how-it-came" style="margin-top:14px;">
+      <strong>🎯 Complete Unit 3 Grand Summary Checklist:</strong>
+      <ul style="margin:6px 0 0 16px; line-height:1.6;">
+        <li><strong>SDD &amp; SDT (Pages 69–73):</strong> Synthesized (bottom-up, S-attributed), Inherited (top-down, L-attributed), Marker Non-terminals ($M 	o arepsilon$).</li>
+        <li><strong>Intermediate Representations (Pages 74–75):</strong> AST, DAG with Value-Number Array, TAC Quadruples, Triples &amp; Indirect Triples.</li>
+        <li><strong>Type Systems &amp; Semantic Rules (Page 76):</strong> Type expressions, widening lattice, name vs structural equivalence, array address translation.</li>
+        <li><strong>Control Flow &amp; Backpatching (Pages 77–78):</strong> Short-circuit jumping code, <code>makelist</code>, <code>merge</code>, <code>backpatch</code> for while/if constructs.</li>
+        <li><strong>Symbol Tables &amp; Procedures (Pages 79–81):</strong> Hash tables, scoped parent chains, activation records, calling sequences, <code>param</code>, <code>call</code>, <code>return</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+
+
 
   </div>
 
