@@ -816,16 +816,16 @@
   <div class="top-nav-header">
     <div class="nav-title">
       <span>📚</span> <strong>Compiler Design Notebook</strong>
-      <span style="font-size:1rem; color:#64748b; font-family:'Inter', sans-serif;">(Unit 1 &amp; 2)</span>
+      <span style="font-size:1rem; color:#64748b; font-family:'Inter', sans-serif;">(Unit 1, 2 &amp; 3)</span>
     </div>
     <div id="filter-status">
-      Showing <strong>All 69 Pages</strong> (Complete Notes)
+      Showing <strong>All 73 Pages</strong> (Complete Notes)
     </div>
   </div>
 
   <div class="topic-scroll" id="topic-menu">
     <button class="topic-btn active" data-topic="all" onclick="filterTopic('all')">
-      🌟 All Notes <span class="count-badge">69</span>
+      🌟 All Notes <span class="count-badge">73</span>
     </button>
     <button class="topic-btn" data-topic="phases" onclick="filterTopic('phases')">
       🏛️ Phases &amp; Architecture <span class="count-badge">5</span>
@@ -889,6 +889,9 @@
     </button>
     <button class="topic-btn" data-topic="clr-lalr" onclick="filterTopic('clr-lalr')">
       ⚡ CLR(1) &amp; LALR(1) <span class="count-badge">5</span>
+    </button>
+    <button class="topic-btn" data-topic="sdd" onclick="filterTopic('sdd')">
+      🧠 Unit 3: SDD &amp; SDT <span class="count-badge">4</span>
     </button>
   </div>
 </div>
@@ -11528,6 +11531,495 @@ open_stmt ➔ if expr then stmt
 
   </div>
 
+
+  <!-- ==================== UNIT 3: PAGE 69 — SYNTAX-DIRECTED DEFINITIONS & ATTRIBUTE GRAMMARS ==================== -->
+  <div class="page" data-topic="sdd">
+    <div class="page-header">
+      <span class="subject-tag">🧠 Unit 3: Semantic Analysis Foundation</span>
+      <span class="exam-badge">⭐ 14 Marks Guaranteed Master Question</span>
+    </div>
+
+    <h1 class="title">Syntax-Directed Definitions (SDD) &amp; Attribute Grammars</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>🎯</span> Master Question: Why CFG is Not Enough &amp; Why We Need SDD?
+      </div>
+      <div class="a-content">
+        Context-Free Grammars (CFGs) only check <strong>syntax</strong> (structure of the program, e.g., matching parentheses, operator placing). 
+        A CFG <em>cannot</em> compute values, check variable data types, verify array dimensions, or generate intermediate code!
+        <br><br>
+        <strong>Syntax-Directed Definition (SDD):</strong> A Context-Free Grammar augmented with <strong>Attributes</strong> (values associated with grammar symbols) and <strong>Semantic Rules</strong> (mathematical formulas/actions that compute those attribute values).
+        <br>
+        <span class="highlight" style="background:#dbeafe; color:#1e40af;">SDD = CFG + Attributes + Semantic Rules</span>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Handwritten Reference Blueprint: Synthesized vs Inherited Attributes</h2>
+    <div style="text-align:center; margin:20px 0;">
+      <img src="sdd_synthesized_inherited_1792386328245.jpg" alt="SDD Synthesized vs Inherited Attributes Handwritten Blueprint" class="img-showcase" style="max-height:720px; object-fit:contain;">
+      <p style="color:#64748b; font-size:0.95rem; margin-top:6px;"><em>Figure 69.1: Handwritten notes illustrating Synthesized Attributes (Bottom-Up child-to-parent flow) vs Inherited Attributes (Top-Down parent/sibling-to-node flow) with type declaration distribution.</em></p>
+    </div>
+
+    <h2 class="section-heading">2. The Two Types of Attributes: Synthesized vs Inherited</h2>
+    <p>Every node in a parse tree has attributes. Based on how its value is calculated, attributes are strictly divided into two categories:</p>
+
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title" style="color:#f97316;">1. Synthesized Attributes (Bottom-Up Flow ⬆️)</span>
+        <span class="step-badge">Evaluated in Postorder</span>
+      </div>
+      <p>An attribute is <strong>Synthesized</strong> if the value of the attribute at node $N$ is computed solely from the attribute values of the <strong>children of $N$</strong> (and possibly $N$ itself).</p>
+      <div class="code-snippet">
+Production: A &rarr; X Y Z
+Semantic Rule: A.val = f(X.val, Y.val, Z.val)
+      </div>
+      <div class="how-it-came">
+        <strong>🌳 Tree Flow:</strong> Information flows <strong>strictly UPWARDS</strong> from the leaves/children towards the root.
+        <br><strong>Typical Use Case:</strong> Arithmetic expression evaluation (e.g. calculator: <code>E.val = E1.val + T.val</code>).
+      </div>
+    </div>
+
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title" style="color:#ec4899;">2. Inherited Attributes (Top-Down &amp; Sibling Flow ⬇️➡️)</span>
+        <span class="step-badge">Evaluated in Preorder / Inorder</span>
+      </div>
+      <p>An attribute is <strong>Inherited</strong> if the value of the attribute at node $N$ is computed from the attribute values of $N$&apos;s <strong>parent</strong>, $N$&apos;s <strong>siblings</strong>, or $N$ itself.</p>
+      <div class="code-snippet">
+Production: A &rarr; X Y Z
+Semantic Rule: Y.inh = f(A.inh, X.val)
+      </div>
+      <div class="why-needed">
+        <strong>🌳 Tree Flow:</strong> Information flows <strong>DOWNWARDS</strong> from the parent or <strong>SIDEWAYS</strong> from left siblings.
+        <br><strong>Typical Use Case:</strong> Distributing type information in declarations (e.g. <code>float x, y, z</code> where the type <code>float</code> is passed down to identifiers <code>x, y, z</code>).
+      </div>
+    </div>
+
+    <h2 class="section-heading">3. Master Comparison: Synthesized vs Inherited Attributes</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Comparison Parameter</th>
+            <th>Synthesized Attribute</th>
+            <th>Inherited Attribute</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Core Definition</strong></td>
+            <td>Computed from attributes of <strong>children</strong> nodes in the parse tree.</td>
+            <td>Computed from attributes of <strong>parent</strong> or <strong>sibling</strong> nodes.</td>
+          </tr>
+          <tr>
+            <td><strong>Direction of Flow</strong></td>
+            <td><strong>Bottom-Up</strong> (Leaves &rarr; Root ⬆️).</td>
+            <td><strong>Top-Down &amp; Sideways</strong> (Root/Parent &rarr; Children, Left &rarr; Right ⬇️➡️).</td>
+          </tr>
+          <tr>
+            <td><strong>Can Terminal have it?</strong></td>
+            <td>Yes (e.g., <code>digit.lexval</code> given by Lexical Analyzer).</td>
+            <td><strong>NO!</strong> Terminals can never have inherited attributes.</td>
+          </tr>
+          <tr>
+            <td><strong>Can Start Symbol have it?</strong></td>
+            <td>Yes (e.g., <code>S.val</code> holds final evaluation result).</td>
+            <td><strong>NO!</strong> Start symbol has no parent to inherit from.</td>
+          </tr>
+          <tr>
+            <td><strong>Tree Traversal Order</strong></td>
+            <td>Bottom-up / <strong>Post-order</strong> traversal.</td>
+            <td>Top-down / <strong>Pre-order</strong> or Depth-First traversal.</td>
+          </tr>
+          <tr>
+            <td><strong>Parser Suitability</strong></td>
+            <td>Natural fit for <strong>LR (Bottom-Up)</strong> parsers (Shift-Reduce).</td>
+            <td>Requires <strong>LL (Top-Down)</strong> parsers or special translation schemes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="qa-box">
+      <div class="q-title">
+        <span>⚠️</span> Exam Trap Alert: Rules You Must Remember!
+      </div>
+      <div class="a-content">
+        &bull; <strong>Rule 1:</strong> An inherited attribute of node $N$ can <em>never</em> depend on the attributes of the children of $N$ (otherwise it becomes a synthesized attribute or creates a dependency cycle!).<br>
+        &bull; <strong>Rule 2:</strong> A terminal symbol in a grammar can have synthesized attributes (supplied by the Lexer scanner), but <strong>NEVER inherited attributes</strong>.<br>
+        &bull; <strong>Rule 3:</strong> An <strong>Annotated Parse Tree</strong> (or Decorated Parse Tree) is a parse tree showing the values of all attributes at each node.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== UNIT 3: PAGE 70 — SOLVED NUMERICAL 1: SYNTHESIZED DESK CALCULATOR ==================== -->
+  <div class="page" data-topic="sdd">
+    <div class="page-header">
+      <span class="subject-tag">🧮 Solved Numerical 1: Desk Calculator</span>
+      <span class="exam-badge">🔥 10 Marks Full Solved Question</span>
+    </div>
+
+    <h1 class="title">Solved Numerical 1: Annotated Parse Tree for Arithmetic Expression</h1>
+
+    <div class="qa-box" style="background:#f0fdf4; border-color:#22c55e;">
+      <div class="q-title" style="color:#15803d;">
+        <span>📝</span> University Numerical Problem Statement
+      </div>
+      <div class="a-content">
+        <em>"Given the Syntax-Directed Definition (SDD) for a desk calculator with synthesized attributes, construct the Parse Tree and the complete <strong>Annotated Parse Tree</strong> for the input expression: <code>3 * 5 + 4 
+</code>. Show the exact attribute computation at every tree node."</em>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Desk Calculator SDD Specification</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Production Rule</th>
+            <th>Semantic Rule (Synthesized Action)</th>
+            <th>Explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>L &rarr; E 
+</code></td>
+            <td><code>print(E.val)</code></td>
+            <td>Prints the final evaluated result when newline is reached.</td>
+          </tr>
+          <tr>
+            <td><code>E &rarr; E1 + T</code></td>
+            <td><code>E.val = E1.val + T.val</code></td>
+            <td>Synthesizes sum of left expression and right term.</td>
+          </tr>
+          <tr>
+            <td><code>E &rarr; T</code></td>
+            <td><code>E.val = T.val</code></td>
+            <td>Passes term value directly up to expression.</td>
+          </tr>
+          <tr>
+            <td><code>T &rarr; T1 * F</code></td>
+            <td><code>T.val = T1.val * F.val</code></td>
+            <td>Synthesizes product of left term and right factor.</td>
+          </tr>
+          <tr>
+            <td><code>T &rarr; F</code></td>
+            <td><code>T.val = F.val</code></td>
+            <td>Passes factor value directly up to term.</td>
+          </tr>
+          <tr>
+            <td><code>F &rarr; ( E )</code></td>
+            <td><code>F.val = E.val</code></td>
+            <td>Parenthesized expression retains evaluated value.</td>
+          </tr>
+          <tr>
+            <td><code>F &rarr; digit</code></td>
+            <td><code>F.val = digit.lexval</code></td>
+            <td>Takes numerical lexical value supplied by Scanner.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">2. Handwritten Reference Diagram: Annotated Parse Tree</h2>
+    <div style="text-align:center; margin:20px 0;">
+      <img src="sdd_annotated_parse_tree_1792386363094.jpg" alt="SDD Annotated Parse Tree Numerical Diagram" class="img-showcase" style="max-height:740px; object-fit:contain;">
+      <p style="color:#64748b; font-size:0.95rem; margin-top:6px;"><em>Figure 70.1: Complete Handwritten Annotated Parse Tree for '3 * 5 + 4 
+'. Green circles highlight synthesized values; green arrows depict bottom-up evaluation leading to E.val = 19.</em></p>
+    </div>
+
+    <h2 class="section-heading">3. Step-by-Step Bottom-Up Evaluation Trace</h2>
+    <p>Because all attributes in this SDD are synthesized, evaluation proceeds <strong>bottom-up</strong> (post-order traversal):</p>
+
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Step 1: Leaves / Lexical Values</span>
+        <span class="step-badge">F.val = digit.lexval</span>
+      </div>
+      <p>The scanner reads digits <code>3</code>, <code>5</code>, and <code>4</code>:</p>
+      <div class="code-snippet">
+digit1.lexval = 3 &rArr; F1.val = 3
+digit2.lexval = 5 &rArr; F2.val = 5
+digit3.lexval = 4 &rArr; F3.val = 4
+      </div>
+    </div>
+
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Step 2: Multiplication Subtree (Operator Precedence)</span>
+        <span class="step-badge">T.val = T1.val * F.val</span>
+      </div>
+      <p>Multiplication <code>*</code> is deeper in the tree than <code>+</code>:</p>
+      <div class="code-snippet">
+T1 &rarr; F1 &rArr; T1.val = 3
+T &rarr; T1 * F2 &rArr; T.val = T1.val * F2.val = 3 * 5 = 15
+E1 &rarr; T &rArr; E1.val = 15
+      </div>
+    </div>
+
+    <div class="step-card s3">
+      <div class="step-header">
+        <span class="step-title">Step 3: Addition Subtree</span>
+        <span class="step-badge">E.val = E1.val + T.val</span>
+      </div>
+      <p>Now evaluate the right term and perform addition:</p>
+      <div class="code-snippet">
+T2 &rarr; F3 &rArr; T2.val = 4
+E &rarr; E1 + T2 &rArr; E.val = E1.val + T2.val = 15 + 4 = 19
+      </div>
+    </div>
+
+    <div class="step-card s4">
+      <div class="step-header">
+        <span class="step-title">Step 4: Root Level Action</span>
+        <span class="step-badge">L.val = print(E.val)</span>
+      </div>
+      <p>Finally, the newline triggers the print semantic action:</p>
+      <div class="code-snippet">
+L &rarr; E 
+ &rArr; print(19) 🎉
+Final Evaluated Output = 19
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================== UNIT 3: PAGE 71 — SOLVED NUMERICAL 2: INHERITED TYPE DECLARATION ==================== -->
+  <div class="page" data-topic="sdd">
+    <div class="page-header">
+      <span class="subject-tag">🧮 Solved Numerical 2: Type Declaration</span>
+      <span class="exam-badge">⭐ High-Scoring Inherited Attribute Trace</span>
+    </div>
+
+    <h1 class="title">Inherited Attributes: Variable Type Declarations &amp; Symbol Table</h1>
+
+    <div class="qa-box" style="background:#fff7ed; border-color:#ea580c;">
+      <div class="q-title" style="color:#c2410c;">
+        <span>📝</span> University Numerical Problem Statement
+      </div>
+      <div class="a-content">
+        <em>"Construct an SDD with inherited attributes for variable type declarations. Draw the complete Annotated Parse Tree for the input: <code>float id1, id2, id3</code> and trace how the type information flows from the type specifier to all variable identifiers."</em>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Variable Declaration SDD Specification</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Production Rule</th>
+            <th>Semantic Rules</th>
+            <th>Attribute Nature</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>D &rarr; T L</code></td>
+            <td><code>L.inh = T.type</code></td>
+            <td><strong>Inherited:</strong> <code>L.inh</code> inherits from left sibling <code>T.type</code></td>
+          </tr>
+          <tr>
+            <td><code>T &rarr; int</code></td>
+            <td><code>T.type = &apos;integer&apos;</code></td>
+            <td><strong>Synthesized:</strong> Set from terminal token</td>
+          </tr>
+          <tr>
+            <td><code>T &rarr; float</code></td>
+            <td><code>T.type = &apos;float&apos;</code></td>
+            <td><strong>Synthesized:</strong> Set from terminal token</td>
+          </tr>
+          <tr>
+            <td><code>L &rarr; L1 , id</code></td>
+            <td><code>L1.inh = L.inh</code><br><code>addType(id.entry, L.inh)</code></td>
+            <td><strong>Inherited:</strong> <code>L1.inh</code> inherits from parent <code>L.inh</code>; <code>id</code> enters symbol table</td>
+          </tr>
+          <tr>
+            <td><code>L &rarr; id</code></td>
+            <td><code>addType(id.entry, L.inh)</code></td>
+            <td><strong>Action:</strong> Enters base <code>id</code> into Symbol Table with type <code>L.inh</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">2. Visual Annotated Parse Tree (Top-Down Flow)</h2>
+    <div class="note-card" style="background:#ffffff; border:2px solid #bae6fd; border-radius:12px; padding:20px; margin:18px 0; font-family:'Courier New', monospace;">
+      <div style="text-align:center; font-size:1.05rem; line-height:1.8; color:#0f172a;">
+        <strong>D</strong><br>
+        &boxur;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdr;<br>
+        <strong>T.type = &apos;float&apos;</strong> &nbsp;&nbsp;&nbsp;&rArr;&rArr; (passes rightwards) &rArr;&rArr;&nbsp;&nbsp;&nbsp; <strong>L.inh = &apos;float&apos;</strong><br>
+        &boxv; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdr;<br>
+        <code>float</code> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>L1.inh = &apos;float&apos;</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>,</code> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>id3</strong> [type: &apos;float&apos;]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxur;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxh;&boxdr;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>L2.inh = &apos;float&apos;</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>,</code> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>id2</strong> [type: &apos;float&apos;]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&boxv;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>id1</strong> [type: &apos;float&apos;]<br>
+      </div>
+    </div>
+
+    <h2 class="section-heading">3. Complete Step-by-Step Flow Trace</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Step 1: Type Synthesis at Left Child</span>
+        <span class="step-badge">T.type = &apos;float&apos;</span>
+      </div>
+      <p>Terminal <code>float</code> is recognized. <code>T.type</code> synthesizes the string <code>&apos;float&apos;</code>.</p>
+    </div>
+
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Step 2: Sideways Inheritance to Right Sibling</span>
+        <span class="step-badge">L.inh = T.type = &apos;float&apos;</span>
+      </div>
+      <p>At the root production <code>D &rarr; T L</code>, the inherited attribute of $L$ is set: <code>L.inh = T.type = &apos;float&apos;</code>.</p>
+    </div>
+
+    <div class="step-card s3">
+      <div class="step-header">
+        <span class="step-title">Step 3: Downward Propagation &amp; Symbol Table Insertion</span>
+        <span class="step-badge">addType(id, float)</span>
+      </div>
+      <p>The type <code>&apos;float&apos;</code> flows down the tree:</p>
+      <div class="code-snippet">
+1. At node L &rarr; L1 , id3:
+   L1.inh = L.inh = 'float'
+   Symbol Table Entry: id3 &rarr; type = 'float'
+
+2. At node L1 &rarr; L2 , id2:
+   L2.inh = L1.inh = 'float'
+   Symbol Table Entry: id2 &rarr; type = 'float'
+
+3. At node L2 &rarr; id1:
+   Symbol Table Entry: id1 &rarr; type = 'float'
+      </div>
+    </div>
+
+    <div class="how-it-came">
+      <strong>🎯 Why Synthesized Attributes Alone CANNOT Do This:</strong>
+      When reading <code>float id1, id2, id3</code>, the type <code>float</code> appears <em>before</em> the identifiers. Since a synthesized attribute can only receive values from below (children), it is impossible for the children <code>id1, id2, id3</code> to know their type without inheriting it from above/left!
+    </div>
+  </div>
+
+
+  <!-- ==================== UNIT 3: PAGE 72 — S-ATTRIBUTED VS L-ATTRIBUTED DEFINITIONS ==================== -->
+  <div class="page" data-topic="sdd">
+    <div class="page-header">
+      <span class="subject-tag">⚖️ SDD Classification &amp; Dependency Graphs</span>
+      <span class="exam-badge">⭐ Direct University Comparison</span>
+    </div>
+
+    <h1 class="title">S-Attributed vs L-Attributed SDD &amp; Dependency Graphs</h1>
+
+    <div class="qa-box" style="background:#fefce8; border-color:#eab308;">
+      <div class="q-title" style="color:#854d0e;">
+        <span>🎯</span> Overview: S-Attributed vs L-Attributed
+      </div>
+      <div class="a-content">
+        Based on the types of attributes used and the allowable directions of data flow, Syntax-Directed Definitions are strictly classified into two major classes:
+        <br><br>
+        <strong>1. S-Attributed Definitions:</strong> Uses <em>ONLY Synthesized</em> attributes.<br>
+        <strong>2. L-Attributed Definitions:</strong> Uses <em>Synthesized</em> attributes + <em>Restricted Inherited</em> attributes (Left-to-Right only).
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. S-Attributed Definitions (Bottom-Up Friendly)</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Properties of S-Attributed SDDs</span>
+        <span class="step-badge">LR Parser Stack Implementation</span>
+      </div>
+      <p>&bull; Every attribute is <strong>Synthesized</strong> (no inherited attributes allowed).<br>
+      &bull; Evaluated naturally in a single <strong>bottom-up</strong> pass during LR parsing.<br>
+      &bull; Attribute values can be held directly on the <strong>parser stack</strong> alongside grammar states and symbols!</p>
+    </div>
+
+    <h2 class="section-heading">2. L-Attributed Definitions (Left-to-Right Order)</h2>
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">The Strict Left-to-Right Rule of L-Attributed SDDs</span>
+        <span class="step-badge">LL Parser / Depth-First Traversal</span>
+      </div>
+      <p>An SDD is <strong>L-Attributed</strong> if each inherited attribute of $X_j$ in a production $A 	o X_1 X_2 \dots X_n$ depends ONLY on:</p>
+      <div class="code-snippet">
+1. The attributes of symbols to the LEFT of Xj: (i.e. X1, X2, ..., Xj-1)
+2. The INHERITED attributes of the parent A.
+      </div>
+      <div class="why-needed">
+        <strong>🚫 STRICT PROHIBITIONS IN L-ATTRIBUTED SDD:</strong>
+        <br>&bull; An inherited attribute of $X_j$ <strong>CANNOT depend on attributes of symbols to its right</strong> ($X_{j+1}, \dots, X_n$).
+        <br>&bull; An inherited attribute of $X_j$ <strong>CANNOT depend on synthesized attributes of parent $A$</strong> (because parent's synthesized attributes depend on all children, which would cause an infinite cycle!).
+      </div>
+    </div>
+
+    <h2 class="section-heading">3. Master Comparison: S-Attributed vs L-Attributed SDD</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>S-Attributed SDD</th>
+            <th>L-Attributed SDD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Attributes Allowed</strong></td>
+            <td><strong>ONLY Synthesized</strong> attributes.</td>
+            <td><strong>Synthesized</strong> + restricted <strong>Inherited</strong> attributes.</td>
+          </tr>
+          <tr>
+            <td><strong>Dependency Direction</strong></td>
+            <td>Children &rarr; Parent (Bottom-Up ⬆️).</td>
+            <td>Children &rarr; Parent AND Parent/Left-Siblings &rarr; Node (⬇️➡️).</td>
+          </tr>
+          <tr>
+            <td><strong>Subset Relationship</strong></td>
+            <td>Every S-attributed SDD is also an L-attributed SDD (<strong>S &sub; L</strong>).</td>
+            <td>Not all L-attributed SDDs are S-attributed.</td>
+          </tr>
+          <tr>
+            <td><strong>Parsing Technique</strong></td>
+            <td>Evaluated easily on <strong>Bottom-Up (LR / Shift-Reduce)</strong> parsers.</td>
+            <td>Evaluated naturally on <strong>Top-Down (LL)</strong> parsers with depth-first traversal.</td>
+          </tr>
+          <tr>
+            <td><strong>Stack Storage</strong></td>
+            <td>Values stored directly on the LR parser stack during reductions.</td>
+            <td>Requires extra variables or recursive descent function parameters.</td>
+          </tr>
+          <tr>
+            <td><strong>Semantic Action Placement</strong></td>
+            <td>Actions placed at the <strong>end</strong> of production (Postfix SDT).</td>
+            <td>Actions can be embedded <strong>anywhere</strong> within the production.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">4. Dependency Graphs &amp; Cycle Detection</h2>
+    <p>A <strong>Dependency Graph</strong> is a directed graph that depicts the interdependencies among the attribute instances at the nodes of a parse tree.</p>
+
+    <div class="flowchart-container">
+      <div class="flowchart-title">🔄 How an SDD is Evaluated Using Dependency Graph &amp; Topological Sort</div>
+      <div class="flow-row">
+        <div class="flow-box start">Parse Tree Construction<small>Syntax only</small></div>
+        <div class="flow-arrow">➔ <span>Build Edges</span></div>
+        <div class="flow-box orange">Dependency Graph<small>a &rarr; b means b needs a</small></div>
+        <div class="flow-arrow">➔ <span>Check Cycle</span></div>
+        <div class="flow-box decision">Acyclic Graph?<small>No Circular Dependency</small></div>
+        <div class="flow-arrow">➔ <span>Topological Sort</span></div>
+        <div class="flow-box success">Evaluation Order<small>Attributes computed cleanly</small></div>
+      </div>
+    </div>
+
+    <div class="how-it-came">
+      <strong>⚡ Golden Theorem:</strong> If a dependency graph has <strong>NO CYCLES</strong>, there is at least one valid evaluation order (obtainable via <strong>Topological Sorting</strong>). If a cycle exists, the SDD is circular and <strong>cannot be evaluated</strong>!
+    </div>
+  </div>
+
   </div>
 
   <script>
@@ -11551,7 +12043,7 @@ function filterTopic(topic) {
         btn.classList.remove('active');
       }
     });
-    statusBanner.innerHTML = 'Showing <strong>All 36 Pages</strong> (Complete Notes)';
+    statusBanner.innerHTML = 'Showing <strong>All 73 Pages</strong> (Complete Notes)';
   } else {
     // Filter to selected topic
     currentActiveTopic = topic;
