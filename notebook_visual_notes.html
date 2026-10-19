@@ -825,7 +825,7 @@
 
   <div class="topic-scroll" id="topic-menu">
     <button class="topic-btn active" data-topic="all" onclick="filterTopic('all')">
-      🌟 All Notes <span class="count-badge">82</span>
+      🌟 All Notes <span class="count-badge">86</span>
     </button>
     <button class="topic-btn" data-topic="phases" onclick="filterTopic('phases')">
       🏛️ Phases &amp; Architecture <span class="count-badge">5</span>
@@ -891,22 +891,22 @@
       ⚡ CLR(1) &amp; LALR(1) <span class="count-badge">5</span>
     </button>
     <button class="topic-btn" data-topic="sdd" onclick="filterTopic('sdd')">
-      🧠 Unit 3: SDD &amp; SDT <span class="count-badge">5</span>
+      🧠 Unit 3: SDD &amp; SDT <span class="count-badge">6</span>
     </button>
     <button class="topic-btn" data-topic="ir" onclick="filterTopic('ir')">
-      🌳 Unit 3: AST, DAG &amp; TAC <span class="count-badge">2</span>
+      🌳 Unit 3: AST, DAG &amp; TAC <span class="count-badge">3</span>
     </button>
     <button class="topic-btn" data-topic="types" onclick="filterTopic('types')">
       🏷️ Unit 3: Type Checking <span class="count-badge">1</span>
     </button>
     <button class="topic-btn" data-topic="backpatch" onclick="filterTopic('backpatch')">
-      ⚡ Unit 3: Control Flow &amp; Backpatching <span class="count-badge">2</span>
+      ⚡ Unit 3: Control Flow &amp; Backpatching <span class="count-badge">3</span>
     </button>
     <button class="topic-btn" data-topic="symbol-table" onclick="filterTopic('symbol-table')">
       🗂️ Unit 3: Symbol Table <span class="count-badge">1</span>
     </button>
     <button class="topic-btn" data-topic="procedures" onclick="filterTopic('procedures')">
-      📦 Unit 3: Procedures &amp; Runtime <span class="count-badge">2</span>
+      📦 Unit 3: Procedures &amp; Runtime <span class="count-badge">3</span>
     </button>
   </div>
 </div>
@@ -12104,6 +12104,129 @@ R  &rarr; &epsilon; { R.syn = R.inh; }
   </div>
 
 
+    <!-- EXTRA NUMERICAL: SDD & SDT TRANSLATION NUMERICALS -->
+  <div class="page" data-topic="sdd">
+    <div class="page-header">
+      <span class="subject-tag">🧠 Unit 3: SDD &amp; SDT Solved Numericals</span>
+      <span class="exam-badge">🔥 14 Marks University Favorite</span>
+    </div>
+
+    <h1 class="title">SDD / SDT Master Numericals: Binary-to-Decimal &amp; Infix-to-Postfix</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>📝</span> Numerical Problem 1: Infix to Postfix Translation Scheme (SDT)
+      </div>
+      <div class="a-content">
+        <strong>Problem:</strong> Write a Syntax-Directed Translation Scheme (SDT) using print semantic actions to convert infix arithmetic expressions into postfix notation, and trace the parse execution for <code>9 - 5 + 2</code>.
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Underlying Grammar &amp; Translation Actions</h2>
+    <div class="code-snippet">
+E  &rarr;  E1 + T    { print('+'); }
+E  &rarr;  E1 - T    { print('-'); }
+E  &rarr;  T
+T  &rarr;  num       { print(num.val); }
+    </div>
+
+    <h2 class="section-heading">2. Step-by-Step Parse &amp; Emission Trace for "9 - 5 + 2"</h2>
+    <p>Using bottom-up LR reduction (post-order traversal):</p>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Step #</th>
+            <th>Parser Production Applied</th>
+            <th>Semantic Action Executed</th>
+            <th>Emitted Postfix Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><code>T &rarr; num (9)</code></td>
+            <td><code>print('9')</code></td>
+            <td><code>9</code></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>E &rarr; T</code></td>
+            <td>None</td>
+            <td><code>9</code></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>T &rarr; num (5)</code></td>
+            <td><code>print('5')</code></td>
+            <td><code>9 5</code></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>E &rarr; E - T</code></td>
+            <td><code>print('-')</code></td>
+            <td><code>9 5 -</code></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><code>T &rarr; num (2)</code></td>
+            <td><code>print('2')</code></td>
+            <td><code>9 5 - 2</code></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><code>E &rarr; E + T</code></td>
+            <td><code>print('+')</code></td>
+            <td><code>9 5 - 2 +</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="how-it-came">
+      <strong>🎉 Final Output:</strong> <code>9 5 - 2 +</code> (Evaluates to $(9 - 5) + 2 = 6$, correct!).
+    </div>
+
+    <h2 class="section-heading">3. Numerical Problem 2: Fractional Binary to Decimal SDD</h2>
+    <div class="example-box">
+      <strong>Grammar for Binary Fractions:</strong><br>
+      $S 	o L . L \mid L$<br>
+      $L 	o L_1 B \mid B$<br>
+      $B 	o 0 \mid 1$
+      <div class="code-snippet" style="margin-top:8px;">
+S &rarr; L1 . L2      { S.val = L1.val + (L2.val / 2^(L2.len)); }
+L &rarr; L1 B         { L.val = 2 * L1.val + B.val; L.len = L1.len + 1; }
+L &rarr; B            { L.val = B.val; L.len = 1; }
+B &rarr; 0            { B.val = 0; }
+B &rarr; 1            { B.val = 1; }
+      </div>
+      <strong>Trace for input: <code>101.101</code></strong>
+      <ul style="margin:6px 0 0 16px; line-height:1.6;">
+        <li>Left integer part <code>101</code>: $L_1.	ext{val} = 1	imes 4 + 0	imes 2 + 1	imes 1 = 5$.</li>
+        <li>Right fraction part <code>101</code>: $L_2.	ext{val} = 5$, $L_2.	ext{len} = 3$.</li>
+        <li>$S.	ext{val} = 5 + rac{5}{2^3} = 5 + rac{5}{8} = 5 + 0.625 = \mathbf{5.625}_{10}$.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-heading">4. Practice Exam Questions with Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: Infix Expression with Parentheses</span>
+        <span class="step-badge">GATE Numerical</span>
+      </div>
+      <p><strong>Question:</strong> Convert infix string <code>(4 + 8) * (6 - 2)</code> to postfix using SDT.</p>
+      <div class="code-snippet">Answer: 4 8 + 6 2 - * (Value: 12 * 4 = 48)</div>
+    </div>
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Q2: Binary Fraction SDD Evaluation</span>
+        <span class="step-badge">University Exam</span>
+      </div>
+      <p><strong>Question:</strong> Find the decimal value evaluated by the above SDD for <code>11.01</code>.</p>
+      <div class="code-snippet">Answer: L1.val = 3; L2.val = 1, L2.len = 2 &rarr; S.val = 3 + 1/4 = 3.25</div>
+    </div>
+  </div>
+
+
   <!-- ==================== UNIT 3: PAGE 74 — INTERMEDIATE REPRESENTATIONS: SYNTAX TREES & DAGS ==================== -->
   <div class="page" data-topic="ir">
     <div class="page-header">
@@ -12367,6 +12490,117 @@ x  = t4
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+
+    <!-- EXTRA NUMERICAL: 2D ARRAY ADDRESS CALCULATION & TAC GENERATION -->
+  <div class="page" data-topic="ir">
+    <div class="page-header">
+      <span class="subject-tag">🌳 Unit 3: IR Solved Numericals</span>
+      <span class="exam-badge">🔥 14 Marks Guaranteed Question</span>
+    </div>
+
+    <h1 class="title">Multi-Dimensional Array Address Calculation &amp; Three-Address Code</h1>
+
+    <div class="qa-box" style="background:#fefce8; border-color:#eab308;">
+      <div class="q-title" style="color:#a16207;">
+        <span>📐</span> General Address Formulas for 2D Arrays
+      </div>
+      <div class="a-content">
+        For a 2D array $A[	ext{low}_1 \dots 	ext{high}_1,\, 	ext{low}_2 \dots 	ext{high}_2]$ with element width $w$ bytes:
+        <ul style="margin:6px 0 0 16px; line-height:1.6;">
+          <li>Number of rows: $n_1 = 	ext{high}_1 - 	ext{low}_1 + 1$</li>
+          <li>Number of columns: $n_2 = 	ext{high}_2 - 	ext{low}_2 + 1$</li>
+          <li><strong>Row-Major Order (C/C++/Java):</strong><br>
+            $$	ext{Address}(A[i][j]) = 	ext{Base}(A) + \Big(ig(i - 	ext{low}_1ig) 	imes n_2 + ig(j - 	ext{low}_2ig)\Big) 	imes w$$
+          </li>
+          <li><strong>Column-Major Order (Fortran/MATLAB):</strong><br>
+            $$	ext{Address}(A[i][j]) = 	ext{Base}(A) + \Big(ig(j - 	ext{low}_2ig) 	imes n_1 + ig(i - 	ext{low}_1ig)\Big) 	imes w$$
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Authentic Visual Blueprint: 2D Array Memory &amp; TAC Derivation</h2>
+    <div class="hand-diagram-card">
+      <img src="array_address_tac_diagram_1792388553677.jpg" alt="2D Array Memory Address Calculation and TAC Derivation" style="max-width:100%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+      <p class="diagram-caption"><em>Fig B.1: 2D Row-Major Order memory storage, offset multiplication, and step-by-step Three-Address Code instructions.</em></p>
+    </div>
+
+    <h2 class="section-heading">2. University Solved Problem: TAC for Array Element Access</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Let $A$ be an integer array of size $10 	imes 20$ (rows $0 \dots 9$, cols $0 \dots 19$). Each integer takes $4$ bytes ($w = 4$). Base address of $A$ is $B_A$. Generate complete Three-Address Code for the statement:
+      <div class="code-snippet" style="margin-top:6px;">x = A[i][j];</div>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step-by-Step TAC Generation Trace:</div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Quad #</th>
+            <th>3-Address Code (TAC)</th>
+            <th>Detailed Formula / Offset Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>(1)</td>
+            <td><code>t1 = i * 20</code></td>
+            <td>Multiplies row index by row width ($n_2 = 20$) &rarr; row offset in elements</td>
+          </tr>
+          <tr>
+            <td>(2)</td>
+            <td><code>t2 = t1 + j</code></td>
+            <td>Adds column index $j$ &rarr; total elements offset from Base</td>
+          </tr>
+          <tr>
+            <td>(3)</td>
+            <td><code>t3 = t2 * 4</code></td>
+            <td>Multiplies element offset by element size ($w = 4$ bytes) &rarr; byte offset</td>
+          </tr>
+          <tr>
+            <td>(4)</td>
+            <td><code>t4 = BA + t3</code></td>
+            <td>Adds Base Address of array $A$ &rarr; absolute byte memory address</td>
+          </tr>
+          <tr>
+            <td>(5)</td>
+            <td><code>t5 = *t4</code></td>
+            <td>Dereferences memory location at address $t_4$ (loads value of $A[i][j]$)</td>
+          </tr>
+          <tr>
+            <td>(6)</td>
+            <td><code>x = t5</code></td>
+            <td>Assigns loaded value into destination variable $x$</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">3. Practice Exam Questions with Complete Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: Array Assignment TAC</span>
+        <span class="step-badge">University Exam</span>
+      </div>
+      <p><strong>Question:</strong> Generate TAC for array assignment <code>A[i][j] = y;</code> (same dimensions as above).</p>
+      <div class="code-snippet">
+t1 = i * 20
+t2 = t1 + j
+t3 = t2 * 4
+t4 = BA + t3
+*t4 = y        // Store y into memory address t4!
+      </div>
+    </div>
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Q2: 1-Based Indexing Numerical</span>
+        <span class="step-badge">GATE Question</span>
+      </div>
+      <p><strong>Question:</strong> Find byte offset for element $A[3][5]$ in array $A[1 \dots 10,\, 1 \dots 15]$ with $w = 8$ bytes in Row-Major Order.</p>
+      <div class="code-snippet">
+Offset = ((3 - 1) * 15 + (5 - 1)) * 8 = (2 * 15 + 4) * 8 = 34 * 8 = 272 bytes!
+      </div>
     </div>
   </div>
 
@@ -12718,6 +12952,162 @@ p1 = v1;  // VALID! Both have identical internal structure { int, int }!
 105: x = t1
 106: goto 100
 107: // Loop Exit
+      </div>
+    </div>
+  </div>
+
+
+    <!-- EXTRA NUMERICAL: COMPLEX BOOLEAN BACKPATCHING (MIXED AND / OR) -->
+  <div class="page" data-topic="backpatch">
+    <div class="page-header">
+      <span class="subject-tag">⚡ Unit 3: Backpatching Solved Numericals</span>
+      <span class="exam-badge">🔥 14 Marks Guaranteed Question</span>
+    </div>
+
+    <h1 class="title">Master Backpatching Numerical: Complex Mixed AND/OR Conditions</h1>
+
+    <div class="qa-box" style="background:#f0fdf4; border-color:#22c55e;">
+      <div class="q-title" style="color:#15803d;">
+        <span>📝</span> University Problem Statement
+      </div>
+      <div class="a-content">
+        <em>"Construct the complete Three-Address Code with Backpatching for the following statement with mixed short-circuit boolean conditions:"</em>
+        <div class="code-snippet" style="margin-top:6px;">if (a &lt; b || c &lt; d &amp;&amp; e &lt; f) x = 1; else x = 0;</div>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Operator Precedence &amp; Translation Grammar Rules</h2>
+    <p>Since <code>&amp;&amp;</code> has higher precedence than <code>||</code>, the expression parses as: <code>(a &lt; b) || ((c &lt; d) &amp;&amp; (e &lt; f))</code>.</p>
+    <div class="rules-card">
+      <ul style="margin:0; padding-left:18px; line-height:1.6;">
+        <li>$B 	o B_1 	extbf{ or } M B_2$:<br>
+          <code>backpatch(B1.falselist, M.quad);</code><br>
+          <code>B.truelist = merge(B1.truelist, B2.truelist);</code><br>
+          <code>B.falselist = B2.falselist;</code>
+        </li>
+        <li>$B 	o B_1 	extbf{ and } M B_2$:<br>
+          <code>backpatch(B1.truelist, M.quad);</code><br>
+          <code>B.truelist = B2.truelist;</code><br>
+          <code>B.falselist = merge(B1.falselist, B2.falselist);</code>
+        </li>
+      </ul>
+    </div>
+
+    <h2 class="section-heading">2. Step-by-Step Backpatching Execution Trace</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Quad #</th>
+            <th>Generated Instruction</th>
+            <th>Hole List Association</th>
+            <th>Backpatched Target Label &amp; Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>100</td>
+            <td><code>if a &lt; b goto ___</code></td>
+            <td>$B_1.	ext{truelist} = \{100\}$</td>
+            <td>Backpatched to <strong>106</strong> (true branch: $x = 1$)</td>
+          </tr>
+          <tr>
+            <td>101</td>
+            <td><code>goto ___</code></td>
+            <td>$B_1.	ext{falselist} = \{101\}$</td>
+            <td>Backpatched to <strong>102</strong> ($M_1.	ext{quad}$, evaluates 2nd operand of <code>||</code>)</td>
+          </tr>
+          <tr>
+            <td>102</td>
+            <td><code>if c &lt; d goto ___</code></td>
+            <td>$B_2.	ext{truelist} = \{102\}$</td>
+            <td>Backpatched to <strong>104</strong> ($M_2.	ext{quad}$, evaluates 2nd operand of <code>&amp;&amp;</code>)</td>
+          </tr>
+          <tr>
+            <td>103</td>
+            <td><code>goto ___</code></td>
+            <td>$B_2.	ext{falselist} = \{103\}$</td>
+            <td>Backpatched to <strong>108</strong> (merged into $B.	ext{falselist}$, jumps to else branch: $x = 0$)</td>
+          </tr>
+          <tr>
+            <td>104</td>
+            <td><code>if e &lt; f goto ___</code></td>
+            <td>$B_3.	ext{truelist} = \{104\}$</td>
+            <td>Backpatched to <strong>106</strong> (merged into $B.	ext{truelist}$, jumps to true branch: $x = 1$)</td>
+          </tr>
+          <tr>
+            <td>105</td>
+            <td><code>goto ___</code></td>
+            <td>$B_3.	ext{falselist} = \{105\}$</td>
+            <td>Backpatched to <strong>108</strong> (merged into $B.	ext{falselist}$, jumps to else branch: $x = 0$)</td>
+          </tr>
+          <tr>
+            <td>106</td>
+            <td><code>x = 1</code></td>
+            <td>True Branch ($S_1$)</td>
+            <td>Target of $\{100, 104\}$</td>
+          </tr>
+          <tr>
+            <td>107</td>
+            <td><code>goto 110</code></td>
+            <td>Exit jump ($N$)</td>
+            <td>Jumps past else branch to statement after if-else</td>
+          </tr>
+          <tr>
+            <td>108</td>
+            <td><code>x = 0</code></td>
+            <td>False Branch ($S_2$)</td>
+            <td>Target of $\{103, 105\}$</td>
+          </tr>
+          <tr>
+            <td>109</td>
+            <td><code>// Next statement</code></td>
+            <td>Statement End</td>
+            <td>Target of quad 107</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="how-it-came">
+      <strong>🎉 Final Emitted Code Sequence:</strong>
+      <div class="code-snippet">
+100: if a &lt; b goto 106
+101: goto 102
+102: if c &lt; d goto 104
+103: goto 108
+104: if e &lt; f goto 106
+105: goto 108
+106: x = 1
+107: goto 110
+108: x = 0
+110: ...
+      </div>
+    </div>
+
+    <h2 class="section-heading">3. Practice Exam Questions with Complete Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: Short-Circuit AND Condition</span>
+        <span class="step-badge">GATE Favorite</span>
+      </div>
+      <p><strong>Question:</strong> Generate backpatched quads for <code>if (x &gt; y &amp;&amp; y &gt; z) a = b;</code></p>
+      <div class="code-snippet">
+100: if x &gt; y goto 102
+101: goto 104
+102: if y &gt; z goto 103
+103: a = b
+104: ...
+      </div>
+    </div>
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Q2: Short-Circuit OR Condition</span>
+        <span class="step-badge">University Exam</span>
+      </div>
+      <p><strong>Question:</strong> How many total jumps are emitted for <code>if (p &lt; q || r &gt; s) stmt;</code>?</p>
+      <div class="code-snippet">
+Answer: 3 jumps total (2 conditional jumps + 1 unconditional jump to bypass true target).
       </div>
     </div>
   </div>
@@ -13117,6 +13507,169 @@ void main() {
         <li><strong>Symbol Tables &amp; Procedures (Pages 79–81):</strong> Hash tables, scoped parent chains, activation records, calling sequences, <code>param</code>, <code>call</code>, <code>return</code>.</li>
       </ul>
     </div>
+
+
+  <!-- EXTRA NUMERICAL: RECURSIVE ACTIVATION RECORDS & STRUCT MEMORY ALIGNMENT -->
+  <div class="page" data-topic="procedures">
+    <div class="page-header">
+      <span class="subject-tag">📦 Unit 3: Runtime Solved Numericals</span>
+      <span class="exam-badge">🔥 14 Marks Guaranteed Question</span>
+    </div>
+
+    <h1 class="title">Runtime Solved Numericals: Recursive Stack Tracing &amp; Struct Alignment</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>📝</span> Numerical Problem 1: Recursive Function Stack Trace
+      </div>
+      <div class="a-content">
+        <strong>Problem:</strong> Show the step-by-step call stack configuration, Dynamic Links, Return Addresses, and return value propagation for the recursive call <code>fact(3)</code>:
+        <div class="code-snippet" style="margin-top:6px;">
+int fact(int n) {
+    if (n == 1) return 1;
+    return n * fact(n - 1);
+}
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Authentic Visual Blueprint: Recursive Call Stack Frames</h2>
+    <div class="hand-diagram-card">
+      <img src="recursive_stack_trace_diagram_1792388575000.jpg" alt="Recursive Activation Record Stack Frames and Dynamic Links Trace" style="max-width:100%; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+      <p class="diagram-caption"><em>Fig D.1: Stack growth during call phase (push fact(3) &rarr; fact(2) &rarr; fact(1)) and unwinding return phase (1 &rarr; 2 &rarr; 6).</em></p>
+    </div>
+
+    <h2 class="section-heading">2. Step-by-Step Activation Record Lifecycle for fact(3)</h2>
+    <div class="table-responsive">
+      <table class="hand-table">
+        <thead>
+          <tr>
+            <th>Execution Phase</th>
+            <th>Active Stack Frame</th>
+            <th>Frame Slots (RA, Dynamic Link, Param n)</th>
+            <th>Action &amp; Return Handshake</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Call 1</strong></td>
+            <td><code>fact(3)</code> pushed</td>
+            <td><code>RA: Caller, DL: NULL, n = 3</code></td>
+            <td>$n 
+eq 1 \implies$ calls <code>fact(2)</code>, pauses at $3 	imes \dots$</td>
+          </tr>
+          <tr>
+            <td><strong>Call 2</strong></td>
+            <td><code>fact(2)</code> pushed</td>
+            <td><code>RA: 0x4010A8, DL: &rarr; fact(3), n = 2</code></td>
+            <td>$n 
+eq 1 \implies$ calls <code>fact(1)</code>, pauses at $2 	imes \dots$</td>
+          </tr>
+          <tr>
+            <td><strong>Call 3 (Base Case)</strong></td>
+            <td><code>fact(1)</code> pushed</td>
+            <td><code>RA: 0x4010A8, DL: &rarr; fact(2), n = 1</code></td>
+            <td>$n == 1 \implies$ returns <strong>1</strong>. Frame popped!</td>
+          </tr>
+          <tr>
+            <td><strong>Return 1</strong></td>
+            <td><code>fact(2)</code> resumes</td>
+            <td>Computes $2 	imes 1 = \mathbf{2}$</td>
+            <td>Returns <strong>2</strong> to caller. Frame popped!</td>
+          </tr>
+          <tr>
+            <td><strong>Return 2</strong></td>
+            <td><code>fact(3)</code> resumes</td>
+            <td>Computes $3 	imes 2 = \mathbf{6}$</td>
+            <td>Returns <strong>6</strong> to original caller. Stack empty!</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-heading">3. Numerical Problem 2: Struct Alignment &amp; Padding Calculation</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> In a 64-bit architecture with natural alignment (char=1 byte, int=4 bytes, double=8 bytes, pointer=8 bytes), compute the size and variable offsets for:
+      <div class="code-snippet" style="margin-top:6px;">
+struct Student {
+    char grade;     // 1 byte
+    int id;         // 4 bytes
+    double gpa;     // 8 bytes
+    char flag;      // 1 byte
+};
+      </div>
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Offset &amp; Padding Analysis:</div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Size</th>
+            <th>Offset</th>
+            <th>Internal Padding Added</th>
+            <th>Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>char grade</code></td>
+            <td>1 byte</td>
+            <td>0</td>
+            <td>3 bytes padding (bytes 1–3)</td>
+            <td>Next member <code>int id</code> must align on a 4-byte boundary (offset 4).</td>
+          </tr>
+          <tr>
+            <td><code>int id</code></td>
+            <td>4 bytes</td>
+            <td>4</td>
+            <td>0 bytes padding (bytes 4–7)</td>
+            <td>Ends at byte 7. Next member is <code>double</code> (needs 8-byte boundary).</td>
+          </tr>
+          <tr>
+            <td><code>double gpa</code></td>
+            <td>8 bytes</td>
+            <td>8</td>
+            <td>0 bytes padding (bytes 8–15)</td>
+            <td>Aligned at offset 8, occupies bytes 8 to 15.</td>
+          </tr>
+          <tr>
+            <td><code>char flag</code></td>
+            <td>1 byte</td>
+            <td>16</td>
+            <td>7 bytes tail padding (bytes 17–23)</td>
+            <td>Total struct size must be a multiple of largest alignment ($8$ bytes).</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>Total Struct Size:</strong> $1 + 3	ext{ (pad)} + 4 + 8 + 1 + 7	ext{ (tail pad)} = \mathbf{24	ext{ Bytes}}$!
+      </div>
+    </div>
+
+    <h2 class="section-heading">4. Practice Exam Questions with Complete Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: Tail Struct Re-ordering Optimization</span>
+        <span class="step-badge">GATE Question</span>
+      </div>
+      <p><strong>Question:</strong> How can the fields in <code>struct Student</code> be reordered to minimize memory padding?</p>
+      <div class="code-snippet">
+Optimal order: double gpa (8) &rarr; int id (4) &rarr; char grade (1) &rarr; char flag (1) + 2 pad = 16 Bytes total! (Saved 8 bytes).
+      </div>
+    </div>
+    <div class="step-card s2">
+      <div class="step-header">
+        <span class="step-title">Q2: Deepest Stack Size for fact(N)</span>
+        <span class="step-badge">University Exam</span>
+      </div>
+      <p><strong>Question:</strong> If each AR of <code>fact</code> takes 32 bytes, what is the maximum stack space consumed for <code>fact(5)</code>?</p>
+      <div class="code-snippet">
+Answer: 5 frames &times; 32 bytes = 160 bytes of stack memory.
+      </div>
+    </div>
+  </div>
+
+
+
   </div>
 
 
