@@ -825,7 +825,7 @@
 
   <div class="topic-scroll" id="topic-menu">
     <button class="topic-btn active" data-topic="all" onclick="filterTopic('all')">
-      🌟 All Notes <span class="count-badge">92</span>
+      🌟 All Notes <span class="count-badge">97</span>
     </button>
     <button class="topic-btn" data-topic="phases" onclick="filterTopic('phases')">
       🏛️ Phases &amp; Architecture <span class="count-badge">5</span>
@@ -909,10 +909,10 @@
       📦 Unit 3: Procedures &amp; Runtime <span class="count-badge">3</span>
     </button>
     <button class="topic-btn" data-topic="codegen" onclick="filterTopic('codegen')">
-      ⚙️ Unit 4: Code Generation <span class="count-badge">4</span>
+      ⚙️ Unit 4: Code Generation <span class="count-badge">7</span>
     </button>
     <button class="topic-btn" data-topic="opt" onclick="filterTopic('opt')">
-      🚀 Unit 4: Code Optimization &amp; Runtime <span class="count-badge">2</span>
+      🚀 Unit 4: Code Optimization &amp; Runtime <span class="count-badge">4</span>
     </button>
   </div>
 </div>
@@ -14388,6 +14388,505 @@ B2: i = i + 1
         &bull; <strong>Phase 2 (Sweep):</strong> Scans entire heap; reclaims all unmarked blocks to free list.<br>
         &bull; <em>Advantage:</em> Naturally handles circular references!
       </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- PAGE 93: DAG OF BASIC BLOCKS & LOCAL OPTIMIZATION -->
+  <div class="page" data-topic="codegen">
+    <div class="page-header">
+      <span class="subject-tag">⚙️ Unit 4: Local Optimization with DAG</span>
+      <span class="exam-badge">🔥 14 Marks Solved Numerical</span>
+    </div>
+
+    <h1 class="title">DAG Construction for Basic Blocks &amp; Local Common Subexpressions</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>🌳</span> Why Use DAG for Basic Blocks?
+      </div>
+      <div class="a-content">
+        A <strong>Directed Acyclic Graph (DAG)</strong> is the primary mathematical structure used to optimize a Basic Block.
+        Unlike a syntax tree, a DAG automatically merges nodes with identical operations and identical children, achieving:
+        <ul style="margin:4px 0 0 16px; line-height:1.6;">
+          <li><strong>Local Common Subexpression Elimination:</strong> Detects and prevents recomputation of duplicate expressions.</li>
+          <li><strong>Dead Code Elimination:</strong> Nodes with no ancestors and dead variable labels can be removed.</li>
+          <li><strong>Order Optimization:</strong> Identifies which temporaries can share the same storage.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. DAG Construction Rules for Three-Address Code</h2>
+    <div class="rules-card">
+      <ol style="margin:0; padding-left:18px; line-height:1.7;">
+        <li>For each variable used, create a leaf node labeled with its initial identifier name.</li>
+        <li>For an assignment $x = y 	ext{ op } z$:
+          <ul>
+            <li>Find node $n_y$ for $y$ and node $n_z$ for $z$.</li>
+            <li>Check if an operator node already exists with label <code>op</code> and children $(n_y, n_z)$.</li>
+            <li>If it exists &rarr; Attach label $x$ to the <strong>existing node</strong> (Common Subexpression found!).</li>
+            <li>Else &rarr; Create a new node labeled <code>op</code> with children $(n_y, n_z)$ and attach label $x$.</li>
+          </ul>
+        </li>
+        <li>For a copy statement $x = y$: Attach label $x$ directly to node $n_y$.</li>
+      </ol>
+    </div>
+
+    <h2 class="section-heading">2. University Solved Problem: DAG Construction &amp; Code Regeneration</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Construct the DAG for the following Basic Block and generate the minimal optimized 3-Address Code:
+      <div class="code-snippet" style="margin-top:6px;">
+(1) t1 = a + b
+(2) t2 = c + d
+(3) t3 = e - t2
+(4) t4 = t1 - t3
+(5) t5 = a + b
+(6) t6 = c + d
+(7) t7 = e - t6
+(8) t8 = t5 - t7
+      </div>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step-by-Step DAG Node Creation Trace:</div>
+      <div class="table-responsive">
+        <table class="hand-table">
+          <thead>
+            <tr>
+              <th>Statement</th>
+              <th>Operands Searched</th>
+              <th>Action Taken</th>
+              <th>Node Label Attached</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>(1) t1 = a + b</code></td>
+              <td>Leaves $a, b$</td>
+              <td>New node created with operator <code>+</code></td>
+              <td>Node 1 labeled <code>t1</code></td>
+            </tr>
+            <tr>
+              <td><code>(2) t2 = c + d</code></td>
+              <td>Leaves $c, d$</td>
+              <td>New node created with operator <code>+</code></td>
+              <td>Node 2 labeled <code>t2</code></td>
+            </tr>
+            <tr>
+              <td><code>(3) t3 = e - t2</code></td>
+              <td>Leaf $e$, Node 2</td>
+              <td>New node created with operator <code>-</code></td>
+              <td>Node 3 labeled <code>t3</code></td>
+            </tr>
+            <tr>
+              <td><code>(4) t4 = t1 - t3</code></td>
+              <td>Node 1, Node 3</td>
+              <td>New node created with operator <code>-</code></td>
+              <td>Node 4 labeled <code>t4</code></td>
+            </tr>
+            <tr>
+              <td><code>(5) t5 = a + b</code></td>
+              <td>Leaves $a, b$</td>
+              <td>Node 1 <code>+(a, b)</code> already exists!</td>
+              <td><strong>Attach label <code>t5</code> to Node 1</strong> (Reused!)</td>
+            </tr>
+            <tr>
+              <td><code>(6) t6 = c + d</code></td>
+              <td>Leaves $c, d$</td>
+              <td>Node 2 <code>+(c, d)</code> already exists!</td>
+              <td><strong>Attach label <code>t6</code> to Node 2</strong> (Reused!)</td>
+            </tr>
+            <tr>
+              <td><code>(7) t7 = e - t6</code></td>
+              <td>Leaf $e$, Node 2</td>
+              <td>Node 3 <code>-(e, Node 2)</code> already exists!</td>
+              <td><strong>Attach label <code>t7</code> to Node 3</strong> (Reused!)</td>
+            </tr>
+            <tr>
+              <td><code>(8) t8 = t5 - t7</code></td>
+              <td>Node 1, Node 3</td>
+              <td>Node 4 <code>-(Node 1, Node 3)</code> already exists!</td>
+              <td><strong>Attach label <code>t8</code> to Node 4</strong> (Reused!)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>🎉 Optimized Emitted Code:</strong>
+        <div class="code-snippet">
+t1 = a + b
+t2 = c + d
+t3 = e - t2
+t4 = t1 - t3
+t8 = t4          // Statements 5, 6, 7 are 100% eliminated! 50% instruction reduction!
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-heading">3. Practice Exam Questions with Complete Solutions</h2>
+    <div class="step-card s1">
+      <div class="step-header">
+        <span class="step-title">Q1: DAG Node Count</span>
+        <span class="step-badge">GATE Question</span>
+      </div>
+      <p><strong>Question:</strong> How many total nodes (leaf + interior) are in the DAG for <code>a = b * c; d = b; e = d * c;</code>?</p>
+      <div class="code-snippet">Answer: 3 nodes total (Leaf b, Leaf c, Interior * labeled with a and e). Node d is just an alias on Leaf b.</div>
+    </div>
+  </div>
+
+
+  <!-- PAGE 94: GRAPH COLORING REGISTER ALLOCATION -->
+  <div class="page" data-topic="codegen">
+    <div class="page-header">
+      <span class="subject-tag">⚙️ Unit 4: Global Register Allocation</span>
+      <span class="exam-badge">⭐ 14 Marks Solved Numerical</span>
+    </div>
+
+    <h1 class="title">Chaitin's Graph Coloring Register Allocation Algorithm</h1>
+
+    <div class="qa-box" style="background:#fefce8; border-color:#eab308;">
+      <div class="q-title" style="color:#a16207;">
+        <span>🎨</span> The Register Allocation as Graph Coloring Problem
+      </div>
+      <div class="a-content">
+        In Chaitin's algorithm, allocating $K$ physical registers is formulated as a <strong>K-coloring problem</strong> on an <em>Interference Graph</em>:
+        <ul style="margin:4px 0 0 16px; line-height:1.6;">
+          <li><strong>Nodes:</strong> Variables or live ranges (virtual registers).</li>
+          <li><strong>Edges:</strong> An undirected edge exists between node $u$ and node $v$ if variables $u$ and $v$ are <strong>simultaneously live</strong> at any instruction.</li>
+          <li><strong>Colors:</strong> The $K$ available physical hardware registers (e.g., $R_1, R_2, \dots, R_K$).</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Kempe's Heuristic for K-Coloring</h2>
+    <div class="rules-card">
+      <ol style="margin:0; padding-left:18px; line-height:1.7;">
+        <li><strong>Simplify:</strong> Find a node $v$ with degree $&lt; K$. Push $v$ onto a stack and remove $v$ (and its incident edges) from the interference graph.</li>
+        <li><strong>Repeat</strong> until either all nodes are pushed to the stack, or all remaining nodes have degree $\ge K$.</li>
+        <li><strong>Spill (if stuck):</strong> If all nodes have degree $\ge K$, select a node with high spill cost / low loop nesting, mark it for memory spill, remove it, and continue simplifying.</li>
+        <li><strong>Assign Colors (Pop Phase):</strong> Pop nodes from stack one by one. Assign the lowest available color (register) that is not used by any of its already-colored neighbors.</li>
+      </ol>
+    </div>
+
+    <h2 class="section-heading">2. University Solved Problem: K=3 Register Allocation Trace</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Allocate $K = 3$ registers ($R_1, R_2, R_3$) for variables $A, B, C, D, E$ with the following interference edges:
+      <div class="code-snippet" style="margin-top:6px;">
+Interference Edges:
+(A, B), (A, C), (B, C), (B, D), (C, D), (D, E)
+      </div>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step 1: Node Degrees Calculation</div>
+      <ul style="margin:4px 0 0 16px; line-height:1.6;">
+        <li>$	ext{deg}(A) = 2$ (connected to $B, C$)</li>
+        <li>$	ext{deg}(B) = 3$ (connected to $A, C, D$)</li>
+        <li>$	ext{deg}(C) = 3$ (connected to $A, B, D$)</li>
+        <li>$	ext{deg}(D) = 3$ (connected to $B, C, E$)</li>
+        <li>$	ext{deg}(E) = 1$ (connected to $D$)</li>
+      </ul>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step 2: Simplify Phase (Stack Push)</div>
+      <ol style="margin:4px 0 0 18px; line-height:1.6;">
+        <li>Node $E$ has degree $1 &lt; 3$ &rarr; Push $E$ to stack; remove $E$. Remaining degrees: $	ext{deg}(D)$ becomes 2.</li>
+        <li>Node $A$ has degree $2 &lt; 3$ &rarr; Push $A$ to stack; remove $A$. Remaining degrees: $	ext{deg}(B)$ becomes 2, $	ext{deg}(C)$ becomes 2.</li>
+        <li>Node $D$ has degree $2 &lt; 3$ &rarr; Push $D$ to stack; remove $D$.</li>
+        <li>Node $B$ has degree $1 &lt; 3$ &rarr; Push $B$ to stack; remove $B$.</li>
+        <li>Node $C$ has degree $0 &lt; 3$ &rarr; Push $C$ to stack; remove $C$.</li>
+      </ol>
+      <div class="how-it-came" style="margin-top:6px;">
+        <strong>Stack (Top to Bottom):</strong> $[C, B, D, A, E]$ (All 5 nodes successfully simplified without spilling!).
+      </div>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step 3: Color Assignment Phase (Pop from Stack)</div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Popped Node</th>
+            <th>Interfering Neighbors Already Colored</th>
+            <th>Assigned Register (Color)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$C$</td>
+            <td>None</td>
+            <td><strong>$R_1$</strong></td>
+          </tr>
+          <tr>
+            <td>$B$</td>
+            <td>$C (R_1)$</td>
+            <td><strong>$R_2$</strong></td>
+          </tr>
+          <tr>
+            <td>$D$</td>
+            <td>$B (R_2), C (R_1)$</td>
+            <td><strong>$R_3$</strong></td>
+          </tr>
+          <tr>
+            <td>$A$</td>
+            <td>$B (R_2), C (R_1)$</td>
+            <td><strong>$R_3$</strong> (Reuses $R_3$ since $A$ does not interfere with $D$!)</td>
+          </tr>
+          <tr>
+            <td>$E$</td>
+            <td>$D (R_3)$</td>
+            <td><strong>$R_1$</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>Final Register Assignment:</strong> $A 	o R_3,\; B 	o R_2,\; C 	o R_1,\; D 	o R_3,\; E 	o R_1$ (Zero spills, optimal!).
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PAGE 95: DOMINATORS & NATURAL LOOPS IN CFG -->
+  <div class="page" data-topic="codegen">
+    <div class="page-header">
+      <span class="subject-tag">⚙️ Unit 4: Control Flow Analysis</span>
+      <span class="exam-badge">🔥 14 Marks Guaranteed Question</span>
+    </div>
+
+    <h1 class="title">Dominators, Dominator Trees &amp; Natural Loops in CFG</h1>
+
+    <div class="qa-box" style="background:#f0fdf4; border-color:#22c55e;">
+      <div class="q-title" style="color:#15803d;">
+        <span>🎯</span> Mathematical Definition of Dominance
+      </div>
+      <div class="a-content">
+        In a Control Flow Graph with entry node $S_0$, node $d$ <strong>dominates</strong> node $n$ ($d \;\mathbf{dom}\; n$) if <em>every single execution path</em> from entry node $S_0$ to node $n$ must pass through $d$.
+        <ul style="margin:4px 0 0 16px; line-height:1.6;">
+          <li>Every node dominates itself ($n \;\mathbf{dom}\; n$).</li>
+          <li><strong>Immediate Dominator ($idom(n)$):</strong> The unique dominator of $n$ that is strictly dominated by all other dominators of $n$.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Dominance Equation &amp; Iterative Algorithm</h2>
+    <div class="rules-card">
+      $$D(S_0) = \{S_0\}$$
+      $$D(n) = \{n\} \cup \left( igcap_{p \in 	ext{Pred}(n)} D(p) 
+ight) \quad 	ext{for all } n 
+eq S_0$$
+    </div>
+
+    <h2 class="section-heading">2. University Solved Problem: Dominator Set Computation</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Given a CFG with nodes $1, 2, 3, 4, 5, 6$ and directed edges:
+      $$1 	o 2,\; 2 	o 3,\; 2 	o 4,\; 3 	o 5,\; 4 	o 5,\; 5 	o 2,\; 5 	o 6$$
+      Compute the Dominator set $D(n)$, Immediate Dominators $idom(n)$, identify the Back-Edge and find the Natural Loop.
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step 1: Dominators Table</div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Node $n$</th>
+            <th>Predecessors $	ext{Pred}(n)$</th>
+            <th>Dominator Set $D(n)$</th>
+            <th>Immediate Dominator $idom(n)$</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1</strong> (Entry)</td>
+            <td>None</td>
+            <td>$\{1\}$</td>
+            <td>None</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td>$\{1, 5\}$</td>
+            <td>$\{1, 2\}$</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td>$\{2\}$</td>
+            <td>$\{1, 2, 3\}$</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td>$\{2\}$</td>
+            <td>$\{1, 2, 4\}$</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td><strong>5</strong></td>
+            <td>$\{3, 4\}$</td>
+            <td>$\{1, 2, 5\}$ (since $\{1,2,3\} \cap \{1,2,4\} = \{1,2\}$)</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td><strong>6</strong></td>
+            <td>$\{5\}$</td>
+            <td>$\{1, 2, 5, 6\}$</td>
+            <td>5</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Step 2: Identifying Back-Edge &amp; Natural Loop</div>
+      <ul style="margin:4px 0 0 16px; line-height:1.6;">
+        <li>An edge $a 	o b$ is a <strong>Back-Edge</strong> if $b \;\mathbf{dom}\; a$.</li>
+        <li>Examine edge $5 	o 2$: Does 2 dominate 5? Yes, $2 \in D(5) = \{1, 2, 5\}$. &rarr; <strong>$5 	o 2$ is a Back-Edge!</strong></li>
+        <li><strong>Natural Loop of $5 	o 2$:</strong> The set of all nodes that can reach 5 without going through 2, plus 2 itself:  
+          $$	ext{Loop}(5 	o 2) = \{2, 3, 4, 5\}$$
+          with node 2 acting as the <strong>Loop Header</strong>!
+        </li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- PAGE 96: AVAILABLE EXPRESSIONS DATA FLOW ANALYSIS -->
+  <div class="page" data-topic="opt">
+    <div class="page-header">
+      <span class="subject-tag">🚀 Unit 4: Global Optimization Analysis</span>
+      <span class="exam-badge">⭐ 14 Marks Solved Numerical</span>
+    </div>
+
+    <h1 class="title">Available Expressions Data Flow Analysis for Global Optimization</h1>
+
+    <div class="qa-box" style="background:#eff6ff; border-color:#3b82f6;">
+      <div class="q-title" style="color:#1d4ed8;">
+        <span>📊</span> What is an Available Expression?
+      </div>
+      <div class="a-content">
+        An expression $x + y$ is <strong>available</strong> at a program point $p$ if:
+        <ol style="margin:4px 0 0 16px; line-height:1.6;">
+          <li>Every execution path from the program entry to point $p$ evaluates $x + y$.</li>
+          <li>After the last evaluation of $x + y$, neither $x$ nor $y$ has been redefined (killed).</li>
+        </ol>
+        If an expression is available at block entry, its recomputation can be completely eliminated globally!
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Data Flow Transfer Equations</h2>
+    <div class="rules-card">
+      $$	ext{IN}[B] = igcap_{P \in 	ext{Pred}(B)} 	ext{OUT}[P]$$
+      $$	ext{OUT}[B] = e\_	ext{gen}[B] \cup ig(	ext{IN}[B] - e\_	ext{kill}[B]ig)$$
+      <ul style="margin:6px 0 0 16px; line-height:1.6;">
+        <li>$e\_	ext{gen}[B]$: Set of expressions evaluated in $B$ whose operands are not subsequently redefined in $B$.</li>
+        <li>$e\_	ext{kill}[B]$: Set of all expressions in the entire program whose operands are mutated/overwritten in $B$.</li>
+        <li>Initial boundary condition: $	ext{OUT}[B_1] = e\_	ext{gen}[B_1]$; for all other blocks, $	ext{OUT}[B] = U$ (Universal set of expressions).</li>
+      </ul>
+    </div>
+
+    <h2 class="section-heading">2. University Solved Problem: Iterative Data Flow Trace</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Trace the Available Expressions analysis for the CFG with universal set $U = \{a+b, c-d, e*f\}$:
+      <ul style="margin:4px 0 0 16px; line-height:1.6;">
+        <li>Block $B_1$: computes $a+b$, defines nothing else &rarr; $e\_	ext{gen} = \{a+b\}$, $e\_	ext{kill} = \emptyset$.</li>
+        <li>Block $B_2$: computes $c-d$, mutates $a$ ($a = 5$) &rarr; $e\_	ext{gen} = \{c-d\}$, $e\_	ext{kill} = \{a+b\}$.</li>
+        <li>Block $B_3$: computes $e*f$, defines nothing else &rarr; $e\_	ext{gen} = \{e*f\}$, $e\_	ext{kill} = \emptyset$.</li>
+        <li>Flow edges: $B_1 	o B_2$, $B_1 	o B_3$, and $B_2 	o B_4$, $B_3 	o B_4$.</li>
+      </ul>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">Iteration Table:</div>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Block</th>
+            <th>$e\_	ext{gen}[B]$</th>
+            <th>$e\_	ext{kill}[B]$</th>
+            <th>$	ext{IN}[B]$</th>
+            <th>$	ext{OUT}[B]$</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$B_1$</td>
+            <td>$\{a+b\}$</td>
+            <td>$\emptyset$</td>
+            <td>$\emptyset$</td>
+            <td>$\{a+b\}$</td>
+          </tr>
+          <tr>
+            <td>$B_2$</td>
+            <td>$\{c-d\}$</td>
+            <td>$\{a+b\}$</td>
+            <td>$	ext{OUT}[B_1] = \{a+b\}$</td>
+            <td>$\{c-d\} \cup (\{a+b\} - \{a+b\}) = \{c-d\}$</td>
+          </tr>
+          <tr>
+            <td>$B_3$</td>
+            <td>$\{e*f\}$</td>
+            <td>$\emptyset$</td>
+            <td>$	ext{OUT}[B_1] = \{a+b\}$</td>
+            <td>$\{e*f\} \cup \{a+b\} = \{a+b, e*f\}$</td>
+          </tr>
+          <tr>
+            <td>$B_4$</td>
+            <td>$\emptyset$</td>
+            <td>$\emptyset$</td>
+            <td>$	ext{OUT}[B_2] \cap 	ext{OUT}[B_3] = \{c-d\} \cap \{a+b, e*f\} = \mathbf{\emptyset}$</td>
+            <td>$\mathbf{\emptyset}$</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>Result:</strong> At the entrance of $B_4$, no expression is globally available because $a$ was killed along the path through $B_2$!
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PAGE 97: HEAP STORAGE ALLOCATION TRACE -->
+  <div class="page" data-topic="opt">
+    <div class="page-header">
+      <span class="subject-tag">🚀 Unit 4: Memory Management Numericals</span>
+      <span class="exam-badge">⭐ 14 Marks Solved Numerical</span>
+    </div>
+
+    <h1 class="title">Heap Storage Allocation Trace: First-Fit, Best-Fit &amp; Buddy System</h1>
+
+    <div class="qa-box" style="background:#fefce8; border-color:#eab308;">
+      <div class="q-title" style="color:#a16207;">
+        <span>💾</span> Memory Fragmentation in Dynamic Heap Allocation
+      </div>
+      <div class="a-content">
+        <ul style="margin:4px 0 0 16px; line-height:1.6;">
+          <li><strong>Internal Fragmentation:</strong> Memory allocated inside a partition that is unused by the requested block.</li>
+          <li><strong>External Fragmentation:</strong> Total free memory exists to satisfy a request, but it is split into non-contiguous scattered holes.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-heading">1. Solved Problem: First-Fit vs Best-Fit vs Worst-Fit Trace</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Given memory partitions of sizes: <code>100 KB, 500 KB, 200 KB, 300 KB, 600 KB</code> (in that order), place processes of sizes: <code>212 KB, 417 KB, 112 KB, 426 KB</code>. Compare allocation results:
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">1. First-Fit Allocation (First hole big enough):</div>
+      <ul style="margin:4px 0 0 16px; line-height:1.6;">
+        <li>212 KB &rarr; allocated in <strong>500 KB</strong> block (leaving 288 KB).</li>
+        <li>417 KB &rarr; allocated in <strong>600 KB</strong> block (leaving 183 KB).</li>
+        <li>112 KB &rarr; allocated in <strong>288 KB</strong> block (leaving 176 KB).</li>
+        <li>426 KB &rarr; <strong>CANNOT BE ALLOCATED!</strong> (Must wait, causing allocation failure!).</li>
+      </ul>
+
+      <div class="section-title" style="font-size:15px; margin-top:10px;">2. Best-Fit Allocation (Smallest hole big enough):</div>
+      <ul style="margin:4px 0 0 16px; line-height:1.6;">
+        <li>212 KB &rarr; allocated in <strong>300 KB</strong> block (leaving 88 KB).</li>
+        <li>417 KB &rarr; allocated in <strong>500 KB</strong> block (leaving 83 KB).</li>
+        <li>112 KB &rarr; allocated in <strong>200 KB</strong> block (leaving 88 KB).</li>
+        <li>426 KB &rarr; allocated in <strong>600 KB</strong> block (leaving 174 KB).</li>
+      </ul>
+      <div class="how-it-came" style="margin-top:8px;">
+        <strong>🎉 Best-Fit Result:</strong> All 4 processes allocated successfully with zero process rejections!
+      </div>
+    </div>
+
+    <h2 class="section-heading">2. Buddy System Allocation Solved Numerical</h2>
+    <div class="example-box">
+      <strong>Problem:</strong> Using the Binary Buddy System with 1024 KB total initial memory, trace:
+      <ol style="margin:4px 0 0 18px; line-height:1.6;">
+        <li>Request A = 70 KB &rarr; 1024 splits into $512 	o 256 	o 128 	o$ allocates in <strong>128 KB</strong> block (Internal fragmentation = $128 - 70 = 58$ KB).</li>
+        <li>Request B = 240 KB &rarr; allocates in <strong>256 KB</strong> block.</li>
+        <li>Free A &rarr; 128 KB block freed; if neighbor buddy is free, immediately coalesced back to 256 KB.</li>
+      </ol>
     </div>
   </div>
 
